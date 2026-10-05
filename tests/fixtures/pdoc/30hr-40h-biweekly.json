@@ -1,0 +1,109 @@
+{
+  "id": "30hr-40h-biweekly",
+  "description": "$30/hr x 40 h/week, paid biweekly, first paycheque of a summer term (no year-to-date amounts)",
+  "pdoc": [
+    {
+      "step": "Welcome",
+      "field": "Calculation type",
+      "value": "Salary"
+    },
+    {
+      "step": "Step 1",
+      "field": "Province or territory of employment",
+      "value": "Ontario"
+    },
+    {
+      "step": "Step 1",
+      "field": "Pay period frequency",
+      "value": "Biweekly (26 pay periods a year)"
+    },
+    {
+      "step": "Step 1",
+      "field": "Date the employee is paid",
+      "value": "2026-05-15"
+    },
+    {
+      "step": "Step 2",
+      "field": "Salary or wages income per pay period",
+      "value": "2400.00"
+    },
+    {
+      "step": "Step 2",
+      "field": "Vacation pay",
+      "value": "0.00"
+    },
+    {
+      "step": "Step 2",
+      "field": "(salary type)",
+      "value": "No bonus or retroactive payment"
+    },
+    {
+      "step": "Step 3",
+      "field": "Claim type",
+      "value": "TD1 form"
+    },
+    {
+      "step": "Step 3",
+      "field": "Total claim amount from employee's federal Form TD1",
+      "value": "16452.00"
+    },
+    {
+      "step": "Step 3",
+      "field": "Total claim amount from employee's provincial or territorial Form TD1",
+      "value": "12989.00"
+    },
+    {
+      "step": "Step 3",
+      "field": "CPP: Year-to-date amount (from your records) -> CPP contributions deducted year-to-date",
+      "value": "0.00"
+    },
+    {
+      "step": "Step 3",
+      "field": "Second additional CPP contributions deducted year-to-date",
+      "value": "0.00"
+    },
+    {
+      "step": "Step 3",
+      "field": "EI: Year-to-date amount (from your records) -> EI premiums deducted year-to-date",
+      "value": "0.00"
+    },
+    {
+      "step": "Step 3",
+      "field": "Insurable earnings year-to-date",
+      "value": "0.00"
+    },
+    {
+      "step": "Step 3",
+      "field": "Everything else (RPP, RRSP, union dues, additional tax, etc.)",
+      "value": "leave blank / 0"
+    }
+  ],
+  "input": {
+    "payDate": "2026-05-15",
+    "frequency": "biweekly",
+    "gross": "2400.00",
+    "federalClaim": "16452.00",
+    "ontarioClaim": "12989.00",
+    "exempt": false,
+    "ytd": {
+      "pensionable": "0.00",
+      "cpp": "0.00",
+      "cpp2": "0.00",
+      "ei": "0.00"
+    }
+  },
+  "expected": {
+    "cpp": null,
+    "cpp2": null,
+    "ei": null,
+    "federalTax": null,
+    "ontarioTax": null
+  },
+  "pdocResultLabels": {
+    "cpp": "CPP deductions",
+    "cpp2": "Second Canada Pension Plan (CPP2) deductions",
+    "ei": "EI deductions",
+    "federalTax": "Federal tax deduction",
+    "ontarioTax": "Provincial tax deduction"
+  }
+}

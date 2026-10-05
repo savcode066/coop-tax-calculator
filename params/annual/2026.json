@@ -1,0 +1,346 @@
+{
+  "taxYear": 2026,
+  "status": "Built from the 2025 T1 / Schedule 8 / Schedule 11 / ON428 / ON428-A line structure with 2026 indexed values from T4127-JAN-2026. Re-verify when the 2026 forms are published.",
+  "federal": {
+    "brackets": [
+      {
+        "threshold": {
+          "value": "0",
+          "source": "T4127-JAN-2026 Table 8.1, Federal A, 1st (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        },
+        "rate": {
+          "value": "0.14",
+          "source": "T4127-JAN-2026 Table 8.1, Federal R, 1st (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        }
+      },
+      {
+        "threshold": {
+          "value": "58523",
+          "source": "T4127-JAN-2026 Table 8.1, Federal A, 2nd (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        },
+        "rate": {
+          "value": "0.205",
+          "source": "T4127-JAN-2026 Table 8.1, Federal R, 2nd (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        }
+      },
+      {
+        "threshold": {
+          "value": "117045",
+          "source": "T4127-JAN-2026 Table 8.1, Federal A, 3rd (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        },
+        "rate": {
+          "value": "0.26",
+          "source": "T4127-JAN-2026 Table 8.1, Federal R, 3rd (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        }
+      },
+      {
+        "threshold": {
+          "value": "181440",
+          "source": "T4127-JAN-2026 Table 8.1, Federal A, 4th (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        },
+        "rate": {
+          "value": "0.29",
+          "source": "T4127-JAN-2026 Table 8.1, Federal R, 4th (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        }
+      },
+      {
+        "threshold": {
+          "value": "258482",
+          "source": "T4127-JAN-2026 Table 8.1, Federal A, 5th (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        },
+        "rate": {
+          "value": "0.33",
+          "source": "T4127-JAN-2026 Table 8.1, Federal R, 5th (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        }
+      }
+    ],
+    "basicPersonalAmount": {
+      "max": {
+        "value": "16452",
+        "source": "T4127-JAN-2026 Ch. 2, BPAF formula (NI <= $181,440); Table 8.9 claim code 1; T1 line 30000"
+      },
+      "min": {
+        "value": "14829",
+        "source": "T4127-JAN-2026 Ch. 2, BPAF formula (NI >= $258,482); T1 line 30000"
+      },
+      "phaseOutStart": {
+        "value": "181440",
+        "source": "T4127-JAN-2026 Ch. 2, BPAF formula; T1 line 30000"
+      },
+      "phaseOutEnd": {
+        "value": "258482",
+        "source": "T4127-JAN-2026 Ch. 2, BPAF formula; T1 line 30000"
+      }
+    },
+    "canadaEmploymentAmount": {
+      "value": "1501",
+      "source": "T4127-JAN-2026 Table 8.2, Federal CEA; T1 line 31260 (lesser of this and employment income)"
+    },
+    "topUpCredit": {
+      "rate": {
+        "value": "0.15",
+        "source": "Budget 2025 (Nov 4, 2025) proposed Top-Up Tax Credit for 2025-2030: keeps 15% on non-refundable credit amounts above the first bracket threshold. Not modelled in v1; the engine only warns when it could apply."
+      }
+    }
+  },
+  "cpp": {
+    "ympe": {
+      "value": "74600.00",
+      "source": "T4127-JAN-2026 Table 8.3, YMPE; Schedule 8 (employee, 12 contributory months)"
+    },
+    "basicExemption": {
+      "value": "3500.00",
+      "source": "T4127-JAN-2026 Table 8.3, Basic Exemption; Schedule 8 (employee, 12 contributory months)"
+    },
+    "totalRate": {
+      "value": "0.0595",
+      "source": "T4127-JAN-2026 Table 8.3, Employee Total Contribution Rate; Schedule 8 (employee, 12 contributory months)"
+    },
+    "maxContribution": {
+      "value": "4230.45",
+      "source": "T4127-JAN-2026 Table 8.3, Maximum Employee Total Contribution; Schedule 8 (employee, 12 contributory months)"
+    },
+    "baseRate": {
+      "value": "0.0495",
+      "source": "T4127-JAN-2026 Table 8.4, Base Employee Contribution Rate; Schedule 8 (employee, 12 contributory months)"
+    },
+    "maxBaseContribution": {
+      "value": "3519.45",
+      "source": "T4127-JAN-2026 Table 8.4, Maximum Base Employee Contribution; Schedule 8 (employee, 12 contributory months)"
+    },
+    "firstAdditionalRate": {
+      "value": "0.01",
+      "source": "T4127-JAN-2026 Table 8.5, First Additional Employee Contribution Rate; Schedule 8 (employee, 12 contributory months)"
+    },
+    "yampe": {
+      "value": "85000.00",
+      "source": "T4127-JAN-2026 Table 8.6, YAMPE; Schedule 8 (employee, 12 contributory months)"
+    },
+    "secondAdditionalRate": {
+      "value": "0.04",
+      "source": "T4127-JAN-2026 Table 8.6, Second Additional Employee Contribution Rate; Schedule 8 (employee, 12 contributory months)"
+    },
+    "maxSecondContribution": {
+      "value": "416.00",
+      "source": "T4127-JAN-2026 Table 8.6, Maximum Second Additional Employee Contribution; Schedule 8 (employee, 12 contributory months)"
+    }
+  },
+  "ei": {
+    "maxInsurableEarnings": {
+      "value": "68900.00",
+      "source": "T4127-JAN-2026 Table 8.7, Maximum Annual Insurable Earnings (Canada except QC); T1 lines 31200 and 45000"
+    },
+    "rate": {
+      "value": "0.0163",
+      "source": "T4127-JAN-2026 Table 8.7, Employee Contribution Rate (Canada except QC); T1 lines 31200 and 45000"
+    },
+    "maxPremium": {
+      "value": "1123.07",
+      "source": "T4127-JAN-2026 Table 8.7, Maximum Annual Employee Premium (Canada except QC); T1 lines 31200 and 45000"
+    },
+    "refundAllIfInsurableAtMost": {
+      "value": "2000",
+      "source": "T1 line 45000: if insurable earnings are $2,000 or less, all EI premiums deducted are refunded"
+    }
+  },
+  "ontario": {
+    "brackets": [
+      {
+        "threshold": {
+          "value": "0",
+          "source": "T4127-JAN-2026 Table 8.1, ON A, 1st (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        },
+        "rate": {
+          "value": "0.0505",
+          "source": "T4127-JAN-2026 Table 8.1, ON V, 1st (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        }
+      },
+      {
+        "threshold": {
+          "value": "53891",
+          "source": "T4127-JAN-2026 Table 8.1, ON A, 2nd (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        },
+        "rate": {
+          "value": "0.0915",
+          "source": "T4127-JAN-2026 Table 8.1, ON V, 2nd (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        }
+      },
+      {
+        "threshold": {
+          "value": "107785",
+          "source": "T4127-JAN-2026 Table 8.1, ON A, 3rd (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        },
+        "rate": {
+          "value": "0.1116",
+          "source": "T4127-JAN-2026 Table 8.1, ON V, 3rd (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        }
+      },
+      {
+        "threshold": {
+          "value": "150000",
+          "source": "T4127-JAN-2026 Table 8.1, ON A, 4th (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        },
+        "rate": {
+          "value": "0.1216",
+          "source": "T4127-JAN-2026 Table 8.1, ON V, 4th (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        }
+      },
+      {
+        "threshold": {
+          "value": "220000",
+          "source": "T4127-JAN-2026 Table 8.1, ON A, 5th (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        },
+        "rate": {
+          "value": "0.1316",
+          "source": "T4127-JAN-2026 Table 8.1, ON V, 5th (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+        }
+      }
+    ],
+    "basicPersonalAmount": {
+      "value": "12989",
+      "source": "T4127-JAN-2026 Table 8.2, ON Basic amount; Table 8.18 claim code 1; ON428 line 58040 (2026 indexed value published in T4127-JAN-2026; 2026 return forms not yet released)"
+    },
+    "surtax": [
+      {
+        "threshold": {
+          "value": "5818",
+          "source": "T4127-JAN-2026 Table 8.2, ON 'T4 to V1' row 2; ON428 lines 66-67"
+        },
+        "rate": {
+          "value": "0.20",
+          "source": "T4127-JAN-2026 Table 8.2, ON 'V1 rate' row 2; ON428 lines 66-67"
+        }
+      },
+      {
+        "threshold": {
+          "value": "7446",
+          "source": "T4127-JAN-2026 Table 8.2, ON 'T4 to V1' row 3; ON428 lines 66-67"
+        },
+        "rate": {
+          "value": "0.36",
+          "source": "T4127-JAN-2026 Table 8.2, ON 'V1 rate' row 3; ON428 lines 66-67"
+        }
+      }
+    ],
+    "taxReduction": {
+      "basicAmount": {
+        "value": "300",
+        "source": "T4127-JAN-2026 Table 8.2, ON S2; ON428 line 74 (2025: $294; 2026 indexed)"
+      },
+      "perDependant": {
+        "value": "554",
+        "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario factor Y; ON428 lines 75-76 (not used in v1)"
+      }
+    },
+    "healthPremium": [
+      {
+        "over": {
+          "value": "20000",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        },
+        "rate": {
+          "value": "0.06",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        },
+        "base": {
+          "value": "0",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        },
+        "max": {
+          "value": "300",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        }
+      },
+      {
+        "over": {
+          "value": "36000",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        },
+        "rate": {
+          "value": "0.06",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        },
+        "base": {
+          "value": "300",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        },
+        "max": {
+          "value": "450",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        }
+      },
+      {
+        "over": {
+          "value": "48000",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        },
+        "rate": {
+          "value": "0.25",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        },
+        "base": {
+          "value": "450",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        },
+        "max": {
+          "value": "600",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        }
+      },
+      {
+        "over": {
+          "value": "72000",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        },
+        "rate": {
+          "value": "0.25",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        },
+        "base": {
+          "value": "600",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        },
+        "max": {
+          "value": "750",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        }
+      },
+      {
+        "over": {
+          "value": "200000",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        },
+        "rate": {
+          "value": "0.25",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        },
+        "base": {
+          "value": "750",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        },
+        "max": {
+          "value": "900",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2; ON428 line 89 chart"
+        }
+      }
+    ],
+    "lift": {
+      "rate": {
+        "value": "0.0505",
+        "source": "ON428-A (2025) line 4: 5.05% of employment income (T1 lines 10100 + 10400)"
+      },
+      "max": {
+        "value": "875",
+        "source": "ON428-A (2025) line 5 maximum $875 (not indexed; assumed unchanged for 2026)"
+      },
+      "singleThreshold": {
+        "value": "32500",
+        "source": "ON428-A (2025) line 16 individual income threshold (not indexed; assumed unchanged for 2026)"
+      },
+      "reductionRate": {
+        "value": "0.05",
+        "source": "ON428-A (2025) line 18 applicable rate"
+      }
+    }
+  }
+}

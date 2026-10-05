@@ -1,0 +1,360 @@
+{
+  "edition": "T4127-JUL-2026 (123rd edition)",
+  "effectiveFrom": "2026-07-01",
+  "taxYear": 2026,
+  "documentUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jul.html",
+  "federal": {
+    "brackets": [
+      {
+        "threshold": {
+          "value": "0",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), Federal A, 1st"
+        },
+        "rate": {
+          "value": "0.14",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), Federal R, 1st"
+        },
+        "constant": {
+          "value": "0",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), Federal K, 1st"
+        }
+      },
+      {
+        "threshold": {
+          "value": "58523",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), Federal A, 2nd"
+        },
+        "rate": {
+          "value": "0.205",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), Federal R, 2nd"
+        },
+        "constant": {
+          "value": "3804",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), Federal K, 2nd"
+        }
+      },
+      {
+        "threshold": {
+          "value": "117045",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), Federal A, 3rd"
+        },
+        "rate": {
+          "value": "0.26",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), Federal R, 3rd"
+        },
+        "constant": {
+          "value": "10241",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), Federal K, 3rd"
+        }
+      },
+      {
+        "threshold": {
+          "value": "181440",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), Federal A, 4th"
+        },
+        "rate": {
+          "value": "0.29",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), Federal R, 4th"
+        },
+        "constant": {
+          "value": "15685",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), Federal K, 4th"
+        }
+      },
+      {
+        "threshold": {
+          "value": "258482",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), Federal A, 5th"
+        },
+        "rate": {
+          "value": "0.33",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), Federal R, 5th"
+        },
+        "constant": {
+          "value": "26024",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), Federal K, 5th"
+        }
+      }
+    ],
+    "basicPersonalAmount": {
+      "max": {
+        "value": "16452",
+        "source": "T4127-JAN-2026 Ch. 2, BPAF formula (NI <= $181,440); Table 8.9 claim code 1"
+      },
+      "min": {
+        "value": "14829",
+        "source": "T4127-JAN-2026 Ch. 2, BPAF formula (NI >= $258,482)"
+      },
+      "phaseOutStart": {
+        "value": "181440",
+        "source": "T4127-JAN-2026 Ch. 2, BPAF formula"
+      },
+      "phaseOutEnd": {
+        "value": "258482",
+        "source": "T4127-JAN-2026 Ch. 2, BPAF formula"
+      }
+    },
+    "canadaEmploymentAmount": {
+      "value": "1501",
+      "source": "T4127-JUL-2026 Table 8.2 (effective July 1, 2026), Federal CEA"
+    }
+  },
+  "ontario": {
+    "brackets": [
+      {
+        "threshold": {
+          "value": "0",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), ON A, 1st"
+        },
+        "rate": {
+          "value": "0.0505",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), ON V, 1st"
+        },
+        "constant": {
+          "value": "0",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), ON KP, 1st"
+        }
+      },
+      {
+        "threshold": {
+          "value": "53891",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), ON A, 2nd"
+        },
+        "rate": {
+          "value": "0.0915",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), ON V, 2nd"
+        },
+        "constant": {
+          "value": "2210",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), ON KP, 2nd"
+        }
+      },
+      {
+        "threshold": {
+          "value": "107785",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), ON A, 3rd"
+        },
+        "rate": {
+          "value": "0.1116",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), ON V, 3rd"
+        },
+        "constant": {
+          "value": "4376",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), ON KP, 3rd"
+        }
+      },
+      {
+        "threshold": {
+          "value": "150000",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), ON A, 4th"
+        },
+        "rate": {
+          "value": "0.1216",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), ON V, 4th"
+        },
+        "constant": {
+          "value": "5876",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), ON KP, 4th"
+        }
+      },
+      {
+        "threshold": {
+          "value": "220000",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), ON A, 5th"
+        },
+        "rate": {
+          "value": "0.1316",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), ON V, 5th"
+        },
+        "constant": {
+          "value": "8076",
+          "source": "T4127-JUL-2026 Table 8.1 (effective July 1, 2026), ON KP, 5th"
+        }
+      }
+    ],
+    "basicPersonalAmount": {
+      "value": "12989",
+      "source": "T4127-JUL-2026 Table 8.2 (effective July 1, 2026), ON Basic amount; Table 8.18 claim code 1"
+    },
+    "surtax": [
+      {
+        "threshold": {
+          "value": "5818",
+          "source": "T4127-JUL-2026 Table 8.2 (effective July 1, 2026), ON 'T4 to V1' row 2"
+        },
+        "rate": {
+          "value": "0.20",
+          "source": "T4127-JUL-2026 Table 8.2 (effective July 1, 2026), ON 'V1 rate' row 2"
+        }
+      },
+      {
+        "threshold": {
+          "value": "7446",
+          "source": "T4127-JUL-2026 Table 8.2 (effective July 1, 2026), ON 'T4 to V1' row 3"
+        },
+        "rate": {
+          "value": "0.36",
+          "source": "T4127-JUL-2026 Table 8.2 (effective July 1, 2026), ON 'V1 rate' row 3"
+        }
+      }
+    ],
+    "taxReduction": {
+      "basicAmount": {
+        "value": "300",
+        "source": "T4127-JUL-2026 Table 8.2 (effective July 1, 2026), ON S2"
+      },
+      "perDependant": {
+        "value": "554",
+        "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario factor Y"
+      }
+    },
+    "healthPremium": [
+      {
+        "over": {
+          "value": "20000",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        },
+        "rate": {
+          "value": "0.06",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        },
+        "base": {
+          "value": "0",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        },
+        "max": {
+          "value": "300",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        }
+      },
+      {
+        "over": {
+          "value": "36000",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        },
+        "rate": {
+          "value": "0.06",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        },
+        "base": {
+          "value": "300",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        },
+        "max": {
+          "value": "450",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        }
+      },
+      {
+        "over": {
+          "value": "48000",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        },
+        "rate": {
+          "value": "0.25",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        },
+        "base": {
+          "value": "450",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        },
+        "max": {
+          "value": "600",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        }
+      },
+      {
+        "over": {
+          "value": "72000",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        },
+        "rate": {
+          "value": "0.25",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        },
+        "base": {
+          "value": "600",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        },
+        "max": {
+          "value": "750",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        }
+      },
+      {
+        "over": {
+          "value": "200000",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        },
+        "rate": {
+          "value": "0.25",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        },
+        "base": {
+          "value": "750",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        },
+        "max": {
+          "value": "900",
+          "source": "T4127-JAN-2026 Ch. 4 Step 5, Ontario V2"
+        }
+      }
+    ]
+  },
+  "cpp": {
+    "ympe": {
+      "value": "74600.00",
+      "source": "T4127-JAN-2026 (carried into T4127-JUL-2026 unchanged) Table 8.3, YMPE"
+    },
+    "basicExemption": {
+      "value": "3500.00",
+      "source": "T4127-JAN-2026 (carried into T4127-JUL-2026 unchanged) Table 8.3, Basic Exemption"
+    },
+    "totalRate": {
+      "value": "0.0595",
+      "source": "T4127-JAN-2026 (carried into T4127-JUL-2026 unchanged) Table 8.3, Employee Total Contribution Rate"
+    },
+    "maxContribution": {
+      "value": "4230.45",
+      "source": "T4127-JAN-2026 (carried into T4127-JUL-2026 unchanged) Table 8.3, Maximum Employee Total Contribution"
+    },
+    "baseRate": {
+      "value": "0.0495",
+      "source": "T4127-JAN-2026 (carried into T4127-JUL-2026 unchanged) Table 8.4, Base Employee Contribution Rate"
+    },
+    "maxBaseContribution": {
+      "value": "3519.45",
+      "source": "T4127-JAN-2026 (carried into T4127-JUL-2026 unchanged) Table 8.4, Maximum Base Employee Contribution"
+    },
+    "firstAdditionalRate": {
+      "value": "0.01",
+      "source": "T4127-JAN-2026 (carried into T4127-JUL-2026 unchanged) Table 8.5, First Additional Employee Contribution Rate"
+    },
+    "yampe": {
+      "value": "85000.00",
+      "source": "T4127-JAN-2026 (carried into T4127-JUL-2026 unchanged) Table 8.6, YAMPE"
+    },
+    "secondAdditionalRate": {
+      "value": "0.04",
+      "source": "T4127-JAN-2026 (carried into T4127-JUL-2026 unchanged) Table 8.6, Second Additional Employee Contribution Rate"
+    },
+    "maxSecondContribution": {
+      "value": "416.00",
+      "source": "T4127-JAN-2026 (carried into T4127-JUL-2026 unchanged) Table 8.6, Maximum Second Additional Employee Contribution"
+    }
+  },
+  "ei": {
+    "maxInsurableEarnings": {
+      "value": "68900.00",
+      "source": "T4127-JAN-2026 (carried into T4127-JUL-2026 unchanged) Table 8.7, Maximum Annual Insurable Earnings (Canada except QC)"
+    },
+    "rate": {
+      "value": "0.0163",
+      "source": "T4127-JAN-2026 (carried into T4127-JUL-2026 unchanged) Table 8.7, Employee Contribution Rate (Canada except QC)"
+    },
+    "maxPremium": {
+      "value": "1123.07",
+      "source": "T4127-JAN-2026 (carried into T4127-JUL-2026 unchanged) Table 8.7, Maximum Annual Employee Premium (Canada except QC)"
+    }
+  }
+}
