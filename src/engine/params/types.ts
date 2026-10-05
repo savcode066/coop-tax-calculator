@@ -40,7 +40,6 @@ export interface RawEi {
   maxInsurableEarnings: Sourced
   rate: Sourced
   maxPremium: Sourced
-  refundAllIfInsurableAtMost?: Sourced
 }
 
 export interface RawBpa {
@@ -78,8 +77,8 @@ export interface RawAnnualParams {
     canadaEmploymentAmount: Sourced
     topUpCredit: { rate: Sourced }
   }
-  cpp: RawCpp
-  ei: RawEi & { refundAllIfInsurableAtMost: Sourced }
+  cpp: RawCpp & { actualBaseShare: Sourced }
+  ei: RawEi & { refundAllIfInsurableBelow: Sourced; minimumRefund: Sourced }
   ontario: RawOntario & {
     lift: { rate: Sourced; max: Sourced; singleThreshold: Sourced; reductionRate: Sourced }
   }
@@ -161,8 +160,8 @@ export interface AnnualParams {
   taxYear: number
   status: string
   federal: FederalParams & { topUpRate: Q }
-  cpp: CppParams
-  ei: EiParams & { refundAllIfInsurableAtMost: Q }
+  cpp: CppParams & { actualBaseShare: Q }
+  ei: EiParams & { refundAllIfInsurableBelow: Q; minimumRefund: Q }
   ontario: OntarioParams & {
     lift: { rate: Q; max: Q; singleThreshold: Q; reductionRate: Q }
   }
@@ -255,8 +254,12 @@ export function parseAnnualParams(raw: RawAnnualParams): AnnualParams {
       canadaEmploymentAmount: $(raw.federal.canadaEmploymentAmount),
       topUpRate: r(raw.federal.topUpCredit.rate),
     },
-    cpp: cpp(raw.cpp),
-    ei: { ...ei(raw.ei), refundAllIfInsurableAtMost: $(raw.ei.refundAllIfInsurableAtMost) },
+    cpp: { ...cpp(raw.cpp), actualBaseShare: r(raw.cpp.actualBaseShare) },
+    ei: {
+      ...ei(raw.ei),
+      refundAllIfInsurableBelow: $(raw.ei.refundAllIfInsurableBelow),
+      minimumRefund: $(raw.ei.minimumRefund),
+    },
     ontario: {
       ...ontario(raw.ontario),
       lift: {

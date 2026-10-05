@@ -123,6 +123,10 @@
     "maxSecondContribution": {
       "value": "416.00",
       "source": "T4127-JAN-2026 Table 8.6, Maximum Second Additional Employee Contribution; Schedule 8 (employee, 12 contributory months)"
+    },
+    "actualBaseShare": {
+      "value": "0.831933",
+      "source": "Schedule 8 (2025) Part 3 line 9: actual base contributions = box 16 x 83.1933%"
     }
   },
   "ei": {
@@ -138,9 +142,13 @@
       "value": "1123.07",
       "source": "T4127-JAN-2026 Table 8.7, Maximum Annual Employee Premium (Canada except QC); T1 lines 31200 and 45000"
     },
-    "refundAllIfInsurableAtMost": {
+    "refundAllIfInsurableBelow": {
       "value": "2000",
-      "source": "T1 line 45000: if insurable earnings are $2,000 or less, all EI premiums deducted are refunded"
+      "source": "T2204 (2025) line 1 note 1: if total EI insurable earnings are less than $2,000, enter 0 (all premiums refunded)"
+    },
+    "minimumRefund": {
+      "value": "1.00",
+      "source": "T2204 (2025) line 15: an EI overpayment is refunded only if it is more than $1"
     }
   },
   "ontario": {

@@ -1,0 +1,12 @@
+/** Public API of the tax engine. Pure TypeScript: no React, no DOM, no I/O. */
+export { computeAnnual } from './annual/annual.ts'
+export type { AnnualInput, AnnualResult, EmploymentSlip } from './annual/types.ts'
+export { calculate, defaultTd1, employerKey } from './calculator.ts'
+export type { CalculatorInput, CalculatorResult, OtherEmployment, Td1Advice, TermResult, WorkTermInput } from './calculator.ts'
+export { centsToDecimalString, dollarsToCents, type Cents } from './money.ts'
+export { annualParamsFor, defaultRegistry, editionForPayDate, supportedTaxYears, type IsoDate } from './params/select.ts'
+export { buildTermSchedule, ScheduleError, type PayRate, type TermSchedule } from './schedule/paydates.ts'
+export type { IssueCode, Profile, Residence, ScopeIssue, WorkLocation, WorkType } from './scope.ts'
+export { computeNonPeriodic, NotImplementedError, type NonPeriodicPayment } from './withholding/bonus.ts'
+export { computePeriod, runPayroll } from './withholding/periodic.ts'
+export { PERIODS_PER_YEAR, type PayFrequency, type PaySlip, type Td1 } from './withholding/types.ts'
