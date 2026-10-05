@@ -1,0 +1,119 @@
+{
+  "id": "td1-claim-code-e-ohp-still-withheld",
+  "description": "Biweekly (26 pay periods a year), $2400.00 paid 2026-05-15, TD1 'income less than claim' box (claim code E): annualized income over $20,000, so the Ontario Health Premium is still withheld",
+  "pdoc": [
+    {
+      "step": "Welcome",
+      "field": "Calculation type",
+      "value": "Salary"
+    },
+    {
+      "step": "Step 1",
+      "field": "Province or territory of employment",
+      "value": "Ontario"
+    },
+    {
+      "step": "Step 1",
+      "field": "Pay period frequency",
+      "value": "Biweekly (26 pay periods a year)"
+    },
+    {
+      "step": "Step 1",
+      "field": "Date the employee is paid",
+      "value": "2026-05-15"
+    },
+    {
+      "step": "Step 2",
+      "field": "Salary or wages income per pay period",
+      "value": "2400.00"
+    },
+    {
+      "step": "Step 2",
+      "field": "(salary type)",
+      "value": "No bonus or retroactive payment"
+    },
+    {
+      "step": "Step 3",
+      "field": "Claim type",
+      "value": "Claim codes"
+    },
+    {
+      "step": "Step 3",
+      "field": "Total claim amount from employee's federal Form TD1 using claim codes",
+      "value": "No tax (Claim Code E)"
+    },
+    {
+      "step": "Step 3",
+      "field": "Total claim amount from employee's provincial or territorial Form TD1 using claim codes",
+      "value": "No tax (Claim Code E)"
+    },
+    {
+      "step": "Step 3",
+      "field": "Number of pensionable months",
+      "value": "12 (prefilled)"
+    },
+    {
+      "step": "Step 3",
+      "field": "Pensionable earnings year-to-date",
+      "value": "leave blank (PDOC rejects 0.00)"
+    },
+    {
+      "step": "Step 3",
+      "field": "CPP contributions deducted year-to-date",
+      "value": "leave blank (PDOC rejects 0.00)"
+    },
+    {
+      "step": "Step 3",
+      "field": "Second additional CPP contributions deducted year-to-date",
+      "value": "leave blank (PDOC rejects 0.00)"
+    },
+    {
+      "step": "Step 3",
+      "field": "Insurable earnings year-to-date",
+      "value": "leave blank (PDOC rejects 0.00)"
+    },
+    {
+      "step": "Step 3",
+      "field": "EI premiums deducted year-to-date",
+      "value": "leave blank (PDOC rejects 0.00)"
+    },
+    {
+      "step": "Step 3",
+      "field": "Everything else",
+      "value": "leave blank"
+    }
+  ],
+  "input": {
+    "payDate": "2026-05-15",
+    "frequency": "biweekly",
+    "gross": "2400.00",
+    "federalClaim": "16452.00",
+    "ontarioClaim": "12989.00",
+    "exempt": true,
+    "ytd": {
+      "pensionable": "0.00",
+      "cpp": "0.00",
+      "cpp2": "0.00",
+      "ei": "0.00"
+    }
+  },
+  "expected": {
+    "cpp": "134.79",
+    "cpp2": "0.00",
+    "ei": "39.12",
+    "federalTax": "0.00",
+    "ontarioTax": "23.08"
+  },
+  "pdocNet": "2203.01",
+  "pdocResultLabels": {
+    "cpp": "CPP deductions",
+    "cpp2": "CPP2 deductions",
+    "ei": "EI deductions",
+    "federalTax": "Federal tax deduction",
+    "ontarioTax": "Provincial tax deduction with OHP"
+  },
+  "pdocSource": {
+    "version": "PDOC 2026-06-11 (screen SA_R)",
+    "retrieved": "2026-10-05"
+  }
+}

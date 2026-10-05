@@ -1,0 +1,119 @@
+{
+  "id": "ytd-cpp-and-ei-max-reached-mid-cheque",
+  "description": "Biweekly (26 pay periods a year), $3600.00 paid 2026-12-04, with year-to-date amounts",
+  "pdoc": [
+    {
+      "step": "Welcome",
+      "field": "Calculation type",
+      "value": "Salary"
+    },
+    {
+      "step": "Step 1",
+      "field": "Province or territory of employment",
+      "value": "Ontario"
+    },
+    {
+      "step": "Step 1",
+      "field": "Pay period frequency",
+      "value": "Biweekly (26 pay periods a year)"
+    },
+    {
+      "step": "Step 1",
+      "field": "Date the employee is paid",
+      "value": "2026-12-04"
+    },
+    {
+      "step": "Step 2",
+      "field": "Salary or wages income per pay period",
+      "value": "3600.00"
+    },
+    {
+      "step": "Step 2",
+      "field": "(salary type)",
+      "value": "No bonus or retroactive payment"
+    },
+    {
+      "step": "Step 3",
+      "field": "Claim type",
+      "value": "TD1 form"
+    },
+    {
+      "step": "Step 3",
+      "field": "Total claim amount from employee's federal Form TD1",
+      "value": "16452.00"
+    },
+    {
+      "step": "Step 3",
+      "field": "Total claim amount from employee's provincial or territorial Form TD1",
+      "value": "12989.00"
+    },
+    {
+      "step": "Step 3",
+      "field": "Number of pensionable months",
+      "value": "12 (prefilled)"
+    },
+    {
+      "step": "Step 3",
+      "field": "Pensionable earnings year-to-date",
+      "value": "72000.00"
+    },
+    {
+      "step": "Step 3",
+      "field": "CPP contributions deducted year-to-date",
+      "value": "4100.00"
+    },
+    {
+      "step": "Step 3",
+      "field": "Second additional CPP contributions deducted year-to-date",
+      "value": "leave blank (PDOC rejects 0.00)"
+    },
+    {
+      "step": "Step 3",
+      "field": "Insurable earnings year-to-date",
+      "value": "68000.00"
+    },
+    {
+      "step": "Step 3",
+      "field": "EI premiums deducted year-to-date",
+      "value": "1108.40"
+    },
+    {
+      "step": "Step 3",
+      "field": "Everything else",
+      "value": "leave blank"
+    }
+  ],
+  "input": {
+    "payDate": "2026-12-04",
+    "frequency": "biweekly",
+    "gross": "3600.00",
+    "federalClaim": "16452.00",
+    "ontarioClaim": "12989.00",
+    "exempt": false,
+    "ytd": {
+      "pensionable": "72000.00",
+      "cpp": "4100.00",
+      "cpp2": "0.00",
+      "ei": "1108.40"
+    }
+  },
+  "expected": {
+    "cpp": "130.45",
+    "cpp2": "40.00",
+    "ei": "14.67",
+    "federalTax": "457.33",
+    "ontarioTax": "233.33"
+  },
+  "pdocNet": "2724.22",
+  "pdocResultLabels": {
+    "cpp": "CPP deductions",
+    "cpp2": "CPP2 deductions",
+    "ei": "EI deductions",
+    "federalTax": "Federal tax deduction",
+    "ontarioTax": "Provincial tax deduction"
+  },
+  "pdocSource": {
+    "version": "PDOC 2026-06-11 (screen SA_R)",
+    "retrieved": "2026-10-05"
+  }
+}
