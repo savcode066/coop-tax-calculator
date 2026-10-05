@@ -16,7 +16,7 @@ It is a static site. All calculation happens in the browser. There is no backend
 ```sh
 npm install
 npm run dev        # local dev server
-npm test           # Vitest: engine, params, PDOC fixtures, URL state (114 tests)
+npm test           # Vitest: engine, params, PDOC fixtures, URL state (131 tests)
 npm run typecheck  # tsc -b (strict)
 npm run build      # production build in dist/
 ```
@@ -144,6 +144,7 @@ The steps follow the return's line order:
 | Tuition | Schedule 11 (5000-S11) | 2025 form, 2026 values |
 | Ontario tax, surtax, reduction, health premium | Form ON428 (5006-C) | 2025 form, 2026 values |
 | LIFT credit | Schedule ON428-A (5006-A) | 2025 form |
+| Independent annual cross-check | [TaxTips.ca 2025 and 2026 Canadian Tax Calculator](https://www.taxtips.ca/calculators/canadian-tax/canadian-tax-calculator.htm) | 10 cases agree within $1 |
 
 Every value in `params/**/*.json` has a `source` string naming the document and table or line it came from.
 
@@ -181,7 +182,19 @@ The July 2026 edition changed only BC, Newfoundland and Labrador, and PEI, so fe
 6. **Add tests.**
    - Extend `tests/engine/params.test.ts`: add the new edition to the `editions` list so its JSON is cross-checked against its CSVs, and add any sanity figures.
    - Add PDOC fixtures for the new year.
-7. **Move the UI to the new year.** Change `TAX_YEAR` in `src/ui/state/model.ts`, and the default term dates in `newTerm()`.
+7. **The UI picks up the new year on its own.** The year menu lists every year in the registry and defaults to the newest; shared links to older years keep working. Default term dates follow the selected year.
+8. **Re-run the PDOC check.** Run the seed cases through PDOC for the new year (see below), and update the TaxTips cross-check in `tests/engine/annual-taxtips.test.ts` against that year's calculator.
+
+`tests/engine/multiyear.test.ts` proves the pipeline handles a second year with no code changes. It uses clearly-labelled synthetic 2027 data.
+
+### 2027 status
+
+The confirmed 2027 figures, and what's still missing, are kept in [`params/pending/2027.md`](params/pending/2027.md). That file is not loaded by the app. Confirmed so far:
+
+- **EI:** 1.64% on up to $70,800, maximum $1,161.12
+- **Base CPP:** 4.75%, down from 4.95%
+
+The YMPE, YAMPE and indexed brackets and amounts are announced in November, and T4127-JAN-2027 follows. Until then the app shows "2027 rates aren't published yet" for any 2027 term.
 
 ## Adding a PDOC fixture
 

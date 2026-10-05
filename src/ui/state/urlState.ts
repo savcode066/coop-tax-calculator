@@ -5,7 +5,7 @@
  * falls back to defaults for anything unexpected.
  */
 import type { AppState, PayKind, TermForm } from './model.ts'
-import { defaultState, newId, newTerm } from './model.ts'
+import { DEFAULT_TAX_YEAR, defaultState, newId, newTerm, TAX_YEARS } from './model.ts'
 
 const VERSION = 1
 
@@ -52,14 +52,15 @@ function fromBase64Url(s: string): string {
 
 /** Only non-default values are written, to keep links short. */
 export function encodeState(state: AppState): string {
-  const blank = newTerm()
+  const blank = newTerm({}, state.taxYear)
   const terms = state.terms.map((t) => {
     const o: Record<string, unknown> = {}
     for (const k of TERM_KEYS) if (t[k] !== blank[k]) o[k] = t[k]
     return o
   })
-  const d = defaultState()
+  const d = defaultState(state.taxYear)
   const o: Record<string, unknown> = { v: VERSION, terms }
+  if (state.taxYear !== DEFAULT_TAX_YEAR) o.taxYear = state.taxYear
   if (state.residence !== d.residence) o.residence = state.residence
   if (state.age18to69 !== d.age18to69) o.age18to69 = state.age18to69
   for (const k of TOP_STRINGS) if (state[k]) o[k] = state[k]
@@ -77,14 +78,16 @@ export function decodeState(encoded: string): AppState | null {
   }
   if (!raw || typeof raw !== 'object' || (raw as { v?: unknown }).v !== VERSION) return null
   const r = raw as Record<string, unknown>
-  const state = defaultState()
+  // A link to a year we no longer (or don't yet) support opens on the default year.
+  const year = typeof r.taxYear === 'number' && TAX_YEARS.includes(r.taxYear) ? r.taxYear : DEFAULT_TAX_YEAR
+  const state = defaultState(year)
   if (r.residence === 'ontario' || r.residence === 'quebec' || r.residence === 'other-province' || r.residence === 'non-resident')
     state.residence = r.residence
   if (typeof r.age18to69 === 'boolean') state.age18to69 = r.age18to69
   for (const k of TOP_STRINGS) state[k] = str(r[k]) ?? ''
   if (Array.isArray(r.terms)) {
     const terms = r.terms.slice(0, 6).map((rt) => {
-      const t = newTerm({ id: newId() })
+      const t = newTerm({ id: newId() }, year)
       if (!rt || typeof rt !== 'object') return t
       const src = rt as Record<string, unknown>
       for (const k of TERM_KEYS) {

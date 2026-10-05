@@ -1,15 +1,21 @@
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { calculate, defaultRegistry, type CalculatorResult } from '../engine/index.ts'
+import { Select } from './components/Field.tsx'
+import { AnnualBreakdown, Summary, TermBreakdown } from './components/Results.tsx'
 import { ScopeWarnings } from './components/ScopeWarnings.tsx'
-import { AnnualBreakdown, RefundStamp, TermBreakdown, TermStub } from './components/Results.tsx'
 import { TermCard, type Td1Simulation } from './components/TermCard.tsx'
 import { WhyExplainer } from './components/WhyExplainer.tsx'
 import { YearInputs } from './components/YearInputs.tsx'
 import { formatMoney } from './format.ts'
-import { defaultState, newTerm, TAX_YEAR, toCalculatorInput, type AppState, type TermForm } from './state/model.ts'
+import { defaultState, defaultTermDates, newTerm, TAX_YEARS, toCalculatorInput, withYear, type AppState, type TermForm } from './state/model.ts'
 import { hashFor, readStateFromLocation } from './state/urlState.ts'
 
 const MAX_TERMS = 4
+const NEXT_YEAR = TAX_YEARS[TAX_YEARS.length - 1]! + 1
+const YEAR_OPTIONS = [
+  ...TAX_YEARS.map((y) => ({ value: String(y), label: `${y} tax year` })),
+  { value: String(NEXT_YEAR), label: `${NEXT_YEAR} (rates not out yet)`, disabled: true },
+]
 
 function initialState(): AppState {
   if (typeof window === 'undefined') return defaultState()
@@ -41,24 +47,33 @@ export function App() {
     const out: Record<string, Td1Simulation> = {}
     if (!result.annual) return out
     for (const t of input.terms) {
-      const flipped = calculate({
-        ...input,
-        terms: input.terms.map((x) => (x.id === t.id ? { ...x, td1: { ...x.td1, exempt: !x.td1.exempt } } : x)),
-      })
+      const flipped = calculate({ ...input, terms: input.terms.map((x) => (x.id === t.id ? { ...x, td1: { ...x.td1, exempt: !x.td1.exempt } } : x)) })
       out[t.id] = { current: result.annual.refund, flipped: flipped.annual?.refund ?? null }
     }
     return out
   }, [input, result])
 
-  const patchTerm = (id: string, patch: Partial<TermForm>) =>
-    setState((s) => ({ ...s, terms: s.terms.map((t) => (t.id === id ? { ...t, ...patch } : t)) }))
+  const patchTerm = (id: string, patch: Partial<TermForm>) => setState((s) => ({ ...s, terms: s.terms.map((t) => (t.id === id ? { ...t, ...patch } : t)) }))
+
+  const setYear = (y: number) =>
+    setState((s) => ({
+      ...s,
+      taxYear: y,
+      terms: s.terms.map((t) => ({ ...t, start: withYear(t.start, y), end: withYear(t.end, y), firstPayDate: withYear(t.firstPayDate, y) })),
+    }))
 
   const addTerm = () =>
     setState((s) => {
-      const last = s.terms.at(-1)
-      // Suggest the next calendar slot; most students alternate terms.
-      const next = last && last.start < '2026-05-01' ? { start: '2026-05-04', end: '2026-08-21' } : { start: '2026-01-05', end: '2026-04-24' }
-      return { ...s, terms: [...s.terms, newTerm({ ...next, frequency: last?.frequency ?? 'biweekly' })] }
+      const y = s.taxYear
+      // Suggest the first of winter / summer / fall that no term already occupies.
+      const slots = [
+        { start: `${y}-01-04`, end: `${y}-04-23` },
+        { start: `${y}-05-04`, end: `${y}-08-21` },
+        { start: `${y}-09-08`, end: `${y}-12-18` },
+      ]
+      const taken = (slot: { start: string; end: string }) => s.terms.some((t) => t.start <= slot.end && slot.start <= t.end)
+      const dates = slots.find((slot) => !taken(slot)) ?? defaultTermDates(y)
+      return { ...s, terms: [...s.terms, newTerm({ ...dates, frequency: s.terms.at(-1)?.frequency ?? 'biweekly' }, y)] }
     })
 
   const share = async () => {
@@ -71,33 +86,37 @@ export function App() {
     }
   }
 
-  const editions = result.editionsUsed.length
-    ? result.editionsUsed
-    : defaultRegistry.editions.filter((e) => e.taxYear === TAX_YEAR).map((e) => e.edition)
+  const editions = result.editionsUsed.length ? result.editionsUsed : defaultRegistry.editions.filter((e) => e.taxYear === state.taxYear).map((e) => e.edition)
   const firstTerm = result.terms[0]
   const hasResults = result.terms.length > 0
-  const anyIncomplete = state.terms.some((t) => converted.incomplete.has(t.id))
+  const blocked = result.issues.some((i) => i.severity === 'block')
 
   return (
-    <div className="min-h-dvh pb-32 lg:pb-16">
-      <header className="mx-auto max-w-6xl px-4 pb-6 pt-8 sm:px-6 sm:pt-12">
-        <p className="kicker">UW co-op · tax year {TAX_YEAR} · Ontario</p>
-        <h1 className="font-display mt-2 text-[clamp(2.3rem,9.5vw,5rem)] font-bold leading-[0.95] tracking-tight [font-variation-settings:'opsz'_144]">
-          What you'll <em className="font-medium">actually</em> take home.
-        </h1>
-        <p className="mt-4 max-w-xl text-[1.05rem] leading-relaxed text-ink-soft">
-          Payroll taxes a four-month co-op term as if it were a full-year salary. Here's each paycheque, what you really owe for the year, and the refund
-          that's coming in April.
-        </p>
+    <div className="min-h-dvh pb-28 lg:pb-14">
+      <header className="mx-auto flex max-w-5xl flex-wrap items-end justify-between gap-4 px-5 pb-8 pt-10 sm:px-8 sm:pt-14">
+        <div className="max-w-lg">
+          <h1 className="text-[clamp(1.6rem,6vw,2.1rem)] font-semibold leading-tight tracking-tight">Co-op take-home</h1>
+          <p className="mt-2 text-[15px] leading-relaxed text-muted">
+            What each paycheque from your Waterloo co-op term really is after tax, what you actually owe for the year, and the refund that comes back in April.
+          </p>
+        </div>
+        <Select
+          ariaLabel="Tax year"
+          value={String(state.taxYear)}
+          options={YEAR_OPTIONS}
+          onChange={(v) => setYear(Number(v))}
+          className="h-9 w-auto rounded-md border border-line bg-bg pl-3 text-[13px] text-fg focus:border-fg focus:outline-none"
+        />
       </header>
 
-      <main className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)] gap-8 px-4 sm:px-6 lg:grid-cols-[minmax(0,27rem)_minmax(0,1fr)] lg:items-start lg:gap-10">
-        <div className="flex min-w-0 flex-col gap-6">
+      <main className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)] gap-8 px-5 sm:px-8 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:items-start lg:gap-12">
+        <div className="flex min-w-0 flex-col gap-4">
           {state.terms.map((t, i) => (
             <TermCard
               key={t.id}
               term={t}
               index={i}
+              taxYear={state.taxYear}
               errors={converted.errors}
               advice={result.td1[t.id]}
               simulation={simulations[t.id]}
@@ -110,71 +129,47 @@ export function App() {
             <button
               type="button"
               onClick={addTerm}
-              className="kicker rounded-sm border-2 border-dashed border-rule-strong px-4 py-4 !text-ink transition-colors hover:border-ink hover:bg-gold-soft"
+              className="rounded-xl border border-dashed border-line-strong px-4 py-3 text-sm text-muted transition-colors hover:border-fg hover:text-fg"
             >
-              + Add another work term this year
+              Add another term this year
             </button>
           )}
-          <YearInputs state={state} errors={converted.errors} taxYear={TAX_YEAR} onChange={(p) => setState((s) => ({ ...s, ...p }))} />
-          <div className="flex flex-wrap gap-3">
-            <button type="button" onClick={share} className="kicker rounded-sm border-2 border-ink bg-ink px-4 py-2 !text-paper hover:bg-ink/85">
-              {copied ? 'Link copied' : 'Copy a link to these numbers'}
+          <YearInputs state={state} errors={converted.errors} onChange={(p) => setState((s) => ({ ...s, ...p }))} />
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px]">
+            <button type="button" onClick={share} className="rounded-md bg-fg px-3 py-2 font-medium text-bg hover:opacity-85">
+              {copied ? 'Link copied' : 'Copy link'}
             </button>
-            <button type="button" onClick={() => setState(defaultState())} className="kicker rounded-sm border-2 border-ink px-4 py-2 !text-ink hover:bg-stamp-soft">
+            <button type="button" onClick={() => setState(defaultState(state.taxYear))} className="text-muted hover:text-fg">
               Start over
             </button>
           </div>
-          <p className="-mt-3 text-xs text-ink-soft">
-            Everything is calculated in your browser. Your numbers live only in this page's link (after the #), which isn't sent to any server.
-          </p>
+          <p className="text-xs leading-relaxed text-muted">Calculated in your browser. Your numbers live only in this page's link, after the #, which is never sent to a server.</p>
         </div>
 
-        <div id="results" className="flex min-w-0 flex-col gap-6 lg:sticky lg:top-6" aria-live="polite">
+        <div id="results" className="flex min-w-0 flex-col gap-6 lg:sticky lg:top-8" aria-live="polite">
           <ScopeWarnings issues={result.issues} />
 
-          {!hasResults && anyIncomplete && !result.issues.some((i) => i.severity === 'block') && (
-            <div className="rounded-sm border-2 border-dashed border-rule-strong p-6 text-center">
-              <p className="font-display text-2xl font-semibold">Enter your pay to see your stub.</p>
-              <p className="mt-1 text-sm text-ink-soft">Your hourly rate from the WaterlooWorks posting is enough to start.</p>
+          {!hasResults && !blocked && (
+            <div className="rounded-xl border border-dashed border-line-strong p-8 text-center">
+              <p className="text-[15px] font-medium">Enter your pay to see results</p>
+              <p className="mt-1 text-[13px] text-muted">The hourly rate from the job posting is enough to start.</p>
             </div>
           )}
 
+          {hasResults && <Summary terms={result.terms} annual={result.annual} />}
+
           {hasResults && (
-            <div className="drop-shadow-[4px_4px_0_var(--ink)]">
+            <section className="flex flex-col gap-6 rounded-xl border border-line p-5">
               {result.terms.map((t, i) => (
-                <div key={t.id}>
-                  <TermStub term={t} index={i} />
-                  {i < result.terms.length - 1 && <div className="h-0 border-x-2 border-ink" />}
-                </div>
+                <TermBreakdown key={t.id} term={t} index={i} />
               ))}
-              {result.annual ? (
-                <>
-                  <div className="perforation border-x-2 border-ink bg-sheet" aria-hidden />
-                  <RefundStamp annual={result.annual} />
-                </>
-              ) : (
-                <div className="rounded-b-sm border-2 border-t-0 border-ink bg-sheet px-4 pb-4 pt-2 text-sm text-ink-soft">
-                  The April number needs every term to be in scope.
-                </div>
-              )}
-            </div>
-          )}
-
-          {hasResults && (
-            <section className="rounded-sm border-2 border-ink bg-sheet p-4 sm:p-5">
-              <h2 className="font-display mb-3 text-xl font-semibold [font-variation-settings:'opsz'_48]">The breakdown</h2>
-              <div className="flex flex-col gap-6">
-                {result.terms.map((t, i) => (
-                  <TermBreakdown key={t.id} term={t} index={i} />
-                ))}
-                {result.annual && <AnnualBreakdown annual={result.annual} />}
-              </div>
+              {result.annual && <AnnualBreakdown annual={result.annual} />}
             </section>
           )}
 
           {firstTerm && result.annual && (
-            <section className="rounded-sm border-2 border-ink bg-sheet p-4 sm:p-5">
-              <h2 className="font-display mb-3 text-xl font-semibold [font-variation-settings:'opsz'_48]">Why is so much taken off?</h2>
+            <section className="rounded-xl border border-line p-5">
+              <h2 className="mb-3 text-[15px] font-semibold">Why so much is taken off</h2>
               <WhyExplainer term={firstTerm} annual={result.annual} />
             </section>
           )}
@@ -183,26 +178,23 @@ export function App() {
 
       {/* Mobile: keep the two numbers that matter in view while editing. */}
       {firstTerm && (
-        <a
-          href="#results"
-          className="tabular fixed inset-x-0 bottom-9 z-10 flex items-center justify-between gap-3 border-t-2 border-ink bg-gold px-4 py-2 text-sm font-semibold text-[#1b1914] lg:hidden"
-        >
+        <a href="#results" className="num fixed inset-x-0 bottom-8 z-10 flex items-center justify-between gap-3 border-t border-line bg-bg/95 px-5 py-2.5 text-sm backdrop-blur lg:hidden">
           <span>
-            {formatMoney(firstTerm.payroll.slips[0]!.net)}
-            <span className="font-normal"> / cheque</span>
+            <span className="font-semibold">{formatMoney(firstTerm.payroll.slips[0]!.net)}</span>
+            <span className="text-muted"> per cheque</span>
           </span>
           {result.annual && (
             <span>
-              {result.annual.refund >= 0 ? 'Refund ' : 'Owing '}
-              {formatMoney(Math.abs(result.annual.refund), { cents: false })}
+              <span className="text-muted">{result.annual.refund >= 0 ? 'Refund ' : 'Owing '}</span>
+              <span className={`font-semibold ${result.annual.refund >= 0 ? 'text-accent' : 'text-bad'}`}>{formatMoney(Math.abs(result.annual.refund), { cents: false })}</span>
             </span>
           )}
         </a>
       )}
 
-      <footer className="fixed inset-x-0 bottom-0 z-20 border-t border-rule bg-paper/95 backdrop-blur">
-        <p className="kicker mx-auto max-w-6xl truncate px-4 py-2.5 text-center !text-[0.62rem] sm:px-6">
-          <strong className="text-ink">Estimate only, not tax advice</strong> · Tax year {TAX_YEAR} · {editions.join(' + ')}
+      <footer className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-bg/95 backdrop-blur">
+        <p className="mx-auto max-w-5xl truncate px-5 py-2 text-center text-[11px] text-muted sm:px-8">
+          <span className="font-medium text-fg">Estimate only, not tax advice</span> · Tax year {state.taxYear} · {editions.join(' + ')}
         </p>
       </footer>
     </div>

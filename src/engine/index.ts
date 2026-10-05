@@ -6,7 +6,7 @@ export type { CalculatorInput, CalculatorResult, OtherEmployment, Td1Advice, Ter
 export { centsToDecimalString, dollarsToCents, type Cents } from './money.ts'
 export { annualParamsFor, defaultRegistry, editionForPayDate, supportedTaxYears, type IsoDate } from './params/select.ts'
 export { buildTermSchedule, ScheduleError, type PayRate, type TermSchedule } from './schedule/paydates.ts'
-export type { IssueCode, Profile, Residence, ScopeIssue, WorkLocation, WorkType } from './scope.ts'
+export { yearUnavailableMessage, type IssueCode, type Profile, type Residence, type ScopeIssue, type WorkLocation, type WorkType } from './scope.ts'
 export { computeNonPeriodic, NotImplementedError, type NonPeriodicPayment } from './withholding/bonus.ts'
 export { computePeriod, runPayroll } from './withholding/periodic.ts'
 export { PERIODS_PER_YEAR, type PayFrequency, type PaySlip, type Td1 } from './withholding/types.ts'

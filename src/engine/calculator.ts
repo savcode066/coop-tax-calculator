@@ -8,7 +8,7 @@ import type { AnnualResult, EmploymentSlip } from './annual/types.ts'
 import type { Cents } from './money.ts'
 import { annualParamsFor, defaultRegistry, editionForPayDate, supportedTaxYears, type IsoDate, type ParamRegistry } from './params/select.ts'
 import { buildTermSchedule, type PayRate, type TermSchedule } from './schedule/paydates.ts'
-import { isBlocking, overlapIssues, profileIssues, termIssues, type Profile, type ScopeIssue, type WorkLocation, type WorkType } from './scope.ts'
+import { isBlocking, overlapIssues, profileIssues, termIssues, yearUnavailableMessage, type Profile, type ScopeIssue, type WorkLocation, type WorkType } from './scope.ts'
 import { runPayroll, type PayrollResult } from './withholding/periodic.ts'
 import { ZERO_YTD, type EmployerYtd, type PayFrequency, type Td1 } from './withholding/types.ts'
 
@@ -76,8 +76,9 @@ export const employerKey = (s: string) => s.trim().toLowerCase().replace(/\s+/g,
 export function calculate(input: CalculatorInput, registry: ParamRegistry = defaultRegistry): CalculatorResult {
   const { taxYear } = input
   const issues: ScopeIssue[] = []
-  if (!supportedTaxYears(registry).includes(taxYear))
-    issues.push({ code: 'unsupported-tax-year', severity: 'block', message: `Tax year ${taxYear} is not supported yet.` })
+  const years = supportedTaxYears(registry)
+  if (!years.includes(taxYear))
+    issues.push({ code: 'unsupported-tax-year', severity: 'block', message: yearUnavailableMessage(taxYear, years) })
   issues.push(...profileIssues(input.profile, taxYear))
 
   const sorted = [...input.terms].sort((a, b) => a.start.localeCompare(b.start))
@@ -85,8 +86,9 @@ export function calculate(input: CalculatorInput, registry: ParamRegistry = defa
   const ytdByEmployer = new Map<string, EmployerYtd>()
   const editions = new Set<string>()
 
-  for (const t of sorted) {
-    const own = termIssues({ id: t.id, label: t.employer, location: t.location, workType: t.workType, start: t.start, end: t.end }, taxYear)
+  // Without parameters for the year nothing can be calculated; report it, don't throw.
+  for (const t of years.includes(taxYear) ? sorted : []) {
+    const own = termIssues({ id: t.id, label: t.employer, location: t.location, workType: t.workType, start: t.start, end: t.end }, taxYear, years)
     issues.push(...own)
     if (isBlocking(own)) continue
     let schedule: TermSchedule

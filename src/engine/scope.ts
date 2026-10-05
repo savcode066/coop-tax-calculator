@@ -64,7 +64,15 @@ export interface TermScopeInput {
   end: IsoDate
 }
 
-export function termIssues(t: TermScopeInput, taxYear: number): ScopeIssue[] {
+/** Why a year can't be calculated: not published yet, or simply not supported. */
+export function yearUnavailableMessage(year: number, supportedYears: readonly number[]): string {
+  const latest = Math.max(...supportedYears)
+  return year > latest
+    ? `${year} payroll and tax rates aren't published yet. The CRA releases next year's rates in November–December, and ${year} will be added then.`
+    : `${year} isn't supported. This calculator covers ${supportedYears.join(', ')}.`
+}
+
+export function termIssues(t: TermScopeInput, taxYear: number, supportedYears: readonly number[] = [taxYear]): ScopeIssue[] {
   const out: ScopeIssue[] = []
   const block = (code: IssueCode, message: string) => out.push({ code, severity: 'block', termId: t.id, message })
   const name = t.label || 'This term'
@@ -75,8 +83,17 @@ export function termIssues(t: TermScopeInput, taxYear: number): ScopeIssue[] {
     block('work-other-province', `${name}: payroll withholds that province's tax, which this calculator does not model yet.`)
   if (t.workType === 'contractor')
     block('contractor', `${name}: contractors and self-employed people have no tax withheld and pay both halves of CPP. Not covered here.`)
-  if (Number(t.start.slice(0, 4)) !== taxYear || Number(t.end.slice(0, 4)) !== taxYear)
-    block('term-outside-tax-year', `${name}: this calculator is set up for ${taxYear} work terms only. Split a term that crosses into another year.`)
+  const startYear = Number(t.start.slice(0, 4))
+  const endYear = Number(t.end.slice(0, 4))
+  if (startYear !== endYear)
+    block('term-outside-tax-year', `${name}: this term crosses into ${endYear}. Each tax year is calculated separately, so split it into two terms.`)
+  else if (startYear !== taxYear)
+    block(
+      'term-outside-tax-year',
+      supportedYears.includes(startYear)
+        ? `${name}: this term is in ${startYear}. Switch the tax year to ${startYear} to calculate it.`
+        : `${name}: ${yearUnavailableMessage(startYear, supportedYears)}`,
+    )
   return out
 }
 

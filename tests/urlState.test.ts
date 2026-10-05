@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { parseMoney, formatMoney, formatRate } from '../src/ui/format.ts'
-import { defaultState, newTerm, toCalculatorInput } from '../src/ui/state/model.ts'
+import { DEFAULT_TAX_YEAR, defaultState, defaultTermDates, newTerm, TAX_YEARS, toCalculatorInput, withYear } from '../src/ui/state/model.ts'
 import { decodeState, encodeState, hashFor, readStateFromLocation } from '../src/ui/state/urlState.ts'
 
 const strip = (s: ReturnType<typeof defaultState>) => ({ ...s, terms: s.terms.map(({ id: _id, ...t }) => t) })
@@ -26,6 +26,23 @@ describe('URL state', () => {
     const s = decodeState(bad)!
     expect(s.terms[0]).toMatchObject({ frequency: 'biweekly', amount: '', exempt: false, location: 'ontario' })
     expect(readStateFromLocation('#other')).toBeNull()
+  })
+})
+
+describe('tax year', () => {
+  it('defaults to the newest year with data, and links to unsupported years fall back to it', () => {
+    expect(DEFAULT_TAX_YEAR).toBe(TAX_YEARS.at(-1))
+    const bad = Buffer.from(JSON.stringify({ v: 1, taxYear: 1999, terms: [] })).toString('base64url')
+    expect(decodeState(bad)!.taxYear).toBe(DEFAULT_TAX_YEAR)
+    expect(toCalculatorInput(defaultState()).input.taxYear).toBe(DEFAULT_TAX_YEAR)
+  })
+  it('moves dates between years and picks sensible default terms', () => {
+    expect(withYear('2026-09-08', 2027)).toBe('2027-09-08')
+    expect(withYear('2028-02-29', 2027)).toBe('2027-02-28')
+    expect(withYear('', 2027)).toBe('')
+    const now = new Date('2026-10-05T12:00:00Z')
+    expect(defaultTermDates(2026, now)).toEqual({ start: '2026-09-08', end: '2026-12-18' })
+    expect(defaultTermDates(2027, now)).toEqual({ start: '2027-01-04', end: '2027-04-23' })
   })
 })
 

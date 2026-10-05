@@ -1,149 +1,94 @@
 @import 'tailwindcss';
-@import '@fontsource-variable/fraunces/opsz.css';
-@import '@fontsource/ibm-plex-mono/400.css';
-@import '@fontsource/ibm-plex-mono/500.css';
-@import '@fontsource/ibm-plex-mono/600.css';
+@import '@fontsource-variable/geist/wght.css';
 
 @custom-variant dark (@media (prefers-color-scheme: dark));
 
-/* A printed pay stub: warm paper, ink, Waterloo gold, a red rubber stamp. */
+/* Minimal: neutral greys, one accent for money coming back, red for owing. */
 :root {
-  --paper: #f2ede1;
-  --sheet: #fbf8f1;
-  --ink: #1b1914;
-  --ink-soft: #5a5446;
-  --rule: #d5cbb4;
-  --rule-strong: #b9ad92;
-  --gold: #f4c430;
-  --gold-soft: #f9e6a2;
-  --gold-ink: #7a5c00;
-  --stamp: #b3361c;
-  --stamp-soft: #f6dcd3;
-  --good: #2e6b3c;
+  --bg: #ffffff;
+  --surface: #f6f6f7;
+  --fg: #0b0b0c;
+  --muted: #6e6e76;
+  --line: #e7e7ea;
+  --line-strong: #cfcfd5;
+  --accent: #047857;
+  --accent-soft: #e7f5ef;
+  --warn: #b45309;
+  --warn-soft: #fdf3e4;
+  --bad: #c62828;
+  --bad-soft: #fcebeb;
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #13110d;
-    --sheet: #1c1915;
-    --ink: #eee7d6;
-    --ink-soft: #a69e8b;
-    --rule: #39332a;
-    --rule-strong: #554c3e;
-    --gold: #f4c430;
-    --gold-soft: #4a3c12;
-    --gold-ink: #f4c430;
-    --stamp: #f07255;
-    --stamp-soft: #3d1d15;
-    --good: #7cc48b;
+    --bg: #0b0b0c;
+    --surface: #151517;
+    --fg: #f4f4f5;
+    --muted: #9b9ba3;
+    --line: #26262a;
+    --line-strong: #3a3a40;
+    --accent: #3ccf91;
+    --accent-soft: #0f2a20;
+    --warn: #f0b35a;
+    --warn-soft: #2a2010;
+    --bad: #f07a7a;
+    --bad-soft: #2c1515;
     color-scheme: dark;
   }
 }
 
 @theme inline {
-  --color-paper: var(--paper);
-  --color-sheet: var(--sheet);
-  --color-ink: var(--ink);
-  --color-ink-soft: var(--ink-soft);
-  --color-rule: var(--rule);
-  --color-rule-strong: var(--rule-strong);
-  --color-gold: var(--gold);
-  --color-gold-soft: var(--gold-soft);
-  --color-gold-ink: var(--gold-ink);
-  --color-stamp: var(--stamp);
-  --color-stamp-soft: var(--stamp-soft);
-  --color-good: var(--good);
-  --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 html {
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--bg);
+  color: var(--fg);
   -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
-  font-family: var(--font-display);
-  font-optical-sizing: auto;
-  /* Paper grain, generated inline: no network request. */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.45 0 0 0 0 0.35 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  font-family: var(--font-sans);
+  font-feature-settings: 'ss01' 1;
+  -webkit-font-smoothing: antialiased;
 }
 
-.tabular {
-  font-family: var(--font-mono);
+.num {
   font-variant-numeric: tabular-nums;
-  font-feature-settings: 'tnum' 1, 'zero' 1;
-}
-
-.kicker {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-}
-
-/* The tear line between "what payroll takes" and "what you actually owe". */
-.perforation {
-  position: relative;
-  height: 1.5rem;
-  margin-inline: -1px;
-  background:
-    radial-gradient(circle at 0 50%, var(--paper) 0.6rem, transparent 0.65rem) left / 1.2rem 100% no-repeat,
-    radial-gradient(circle at 100% 50%, var(--paper) 0.6rem, transparent 0.65rem) right / 1.2rem 100% no-repeat;
-}
-.perforation::after {
-  content: '';
-  position: absolute;
-  inset: 50% 1.1rem auto;
-  border-top: 2px dashed var(--rule-strong);
-}
-
-.stamp {
-  border: 3px double var(--stamp);
-  color: var(--stamp);
-  transform: rotate(-2.5deg);
-}
-
-/* Highlighter swipe behind a figure. */
-.highlight {
-  background: linear-gradient(transparent 55%, var(--gold) 55%, var(--gold) 88%, transparent 88%);
-  padding-inline: 0.15em;
-  box-decoration-break: clone;
-}
-@media (prefers-color-scheme: dark) {
-  .highlight {
-    background: linear-gradient(transparent 60%, color-mix(in srgb, var(--gold) 45%, transparent) 60%, color-mix(in srgb, var(--gold) 45%, transparent) 90%, transparent 90%);
-  }
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-.rise {
-  animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-}
-@media (prefers-reduced-motion: reduce) {
-  .rise {
-    animation: none;
-  }
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: -0.01em;
 }
 
 input[type='date']::-webkit-calendar-picker-indicator {
-  opacity: 0.6;
+  opacity: 0.5;
 }
 @media (prefers-color-scheme: dark) {
   input[type='date']::-webkit-calendar-picker-indicator {
     filter: invert(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fade {
+    animation: fade 0.25s ease-out both;
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
   }
 }

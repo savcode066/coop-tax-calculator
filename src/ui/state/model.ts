@@ -5,6 +5,7 @@
  */
 import {
   defaultTd1,
+  supportedTaxYears,
   type CalculatorInput,
   type Cents,
   type PayFrequency,
@@ -15,7 +16,10 @@ import {
 } from '../../engine/index.ts'
 import { parseHours, parseMoney, parsePercent } from '../format.ts'
 
-export const TAX_YEAR = 2026
+/** Years with published parameters, oldest first. */
+export const TAX_YEARS = supportedTaxYears()
+/** The newest year we have data for. */
+export const DEFAULT_TAX_YEAR = TAX_YEARS[TAX_YEARS.length - 1]!
 
 export type PayKind = 'hourly' | 'weekly' | 'biweekly' | 'monthly'
 
@@ -43,6 +47,7 @@ export interface TermForm {
 }
 
 export interface AppState {
+  taxYear: number
   residence: Residence
   age18to69: boolean
   terms: TermForm[]
@@ -57,11 +62,22 @@ export interface AppState {
 let seq = 0
 export const newId = () => `t${Date.now().toString(36)}${(seq++).toString(36)}`
 
-export const newTerm = (over: Partial<TermForm> = {}): TermForm => ({
+/** A typical term for the year: the fall term for the current year, winter for a future one. */
+export function defaultTermDates(year: number, today = new Date()): { start: string; end: string } {
+  return year > today.getFullYear() ? { start: `${year}-01-04`, end: `${year}-04-23` } : { start: `${year}-09-08`, end: `${year}-12-18` }
+}
+
+/** Move a date (or blank) into another year, clamping Feb 29. */
+export function withYear(date: string, year: number): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return date
+  const md = date.slice(5) === '02-29' ? '02-28' : date.slice(5)
+  return `${year}-${md}`
+}
+
+export const newTerm = (over: Partial<TermForm> = {}, year: number = DEFAULT_TAX_YEAR): TermForm => ({
   id: newId(),
   employer: '',
-  start: '2026-09-08',
-  end: '2026-12-18',
+  ...defaultTermDates(year),
   payKind: 'hourly',
   amount: '',
   hoursPerWeek: '40',
@@ -78,10 +94,11 @@ export const newTerm = (over: Partial<TermForm> = {}): TermForm => ({
   ...over,
 })
 
-export const defaultState = (): AppState => ({
+export const defaultState = (taxYear: number = DEFAULT_TAX_YEAR): AppState => ({
+  taxYear,
   residence: 'ontario',
   age18to69: true,
-  terms: [newTerm()],
+  terms: [newTerm({}, taxYear)],
   tuitionCurrent: '',
   tuitionCarryforward: '',
   otherIncome: '',
@@ -141,7 +158,7 @@ export function toCalculatorInput(state: AppState): Converted {
       else numberOfPays = n
     }
     const td1Tuition = money(t.td1Tuition, k('td1Tuition'), errors)
-    const d = defaultTd1(TAX_YEAR, td1Tuition)
+    const d = defaultTd1(state.taxYear, td1Tuition)
     const federalClaim = t.federalClaim.trim() === '' ? d.federalClaim : money(t.federalClaim, k('federalClaim'), errors)
     const ontarioClaim = t.ontarioClaim.trim() === '' ? d.ontarioClaim : money(t.ontarioClaim, k('ontarioClaim'), errors)
 
@@ -166,7 +183,7 @@ export function toCalculatorInput(state: AppState): Converted {
   }
 
   const input: CalculatorInput = {
-    taxYear: TAX_YEAR,
+    taxYear: state.taxYear,
     profile: { residence: state.residence, age18to69: state.age18to69 },
     terms,
     otherEmployment: {
