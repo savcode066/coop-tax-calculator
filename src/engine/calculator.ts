@@ -6,7 +6,7 @@
 import { computeAnnual } from './annual/annual.ts'
 import type { AnnualResult, EmploymentSlip } from './annual/types.ts'
 import type { Cents } from './money.ts'
-import { defaultRegistry, editionForPayDate, supportedTaxYears, type IsoDate, type ParamRegistry } from './params/select.ts'
+import { annualParamsFor, defaultRegistry, editionForPayDate, supportedTaxYears, type IsoDate, type ParamRegistry } from './params/select.ts'
 import { buildTermSchedule, type PayRate, type TermSchedule } from './schedule/paydates.ts'
 import { isBlocking, overlapIssues, profileIssues, termIssues, type Profile, type ScopeIssue, type WorkLocation, type WorkType } from './scope.ts'
 import { runPayroll, type PayrollResult } from './withholding/periodic.ts'
@@ -46,6 +46,7 @@ export interface CalculatorInput {
 export interface TermResult {
   id: string
   employer: string
+  frequency: PayFrequency
   schedule: TermSchedule
   payroll: PayrollResult
 }
@@ -115,7 +116,7 @@ export function calculate(input: CalculatorInput, registry: ParamRegistry = defa
     })
     ytdByEmployer.set(key, payroll.endingYtd)
     for (const s of payroll.slips) editions.add(s.edition)
-    terms.push({ id: t.id, employer: t.employer, schedule, payroll })
+    terms.push({ id: t.id, employer: t.employer, frequency: t.frequency, schedule, payroll })
   }
 
   issues.push(
@@ -166,12 +167,24 @@ export function calculate(input: CalculatorInput, registry: ParamRegistry = defa
   }
 }
 
+const wholeCents = (x: { n: bigint; d: bigint }): Cents => Number(x.n / x.d)
+
+/** Headline amounts for explanations, read from the annual parameters (cents). */
+export function keyAmounts(taxYear: number, registry: ParamRegistry = defaultRegistry) {
+  const a = annualParamsFor(taxYear, registry)
+  return {
+    federalBasicPersonalAmount: wholeCents(a.federal.basicPersonalAmount.max),
+    ontarioBasicPersonalAmount: wholeCents(a.ontario.basicPersonalAmount),
+    cppBasicExemption: wholeCents(a.cpp.basicExemption),
+  }
+}
+
 /** Default TD1 claims for a tax year: the basic personal amounts (plus optional tuition on the federal TD1). */
 export function defaultTd1(taxYear: number, federalTuition: Cents = 0, registry: ParamRegistry = defaultRegistry): Td1 {
   const e = editionForPayDate(`${taxYear}-01-01`, registry)
   return {
-    federalClaim: Number(e.federal.basicPersonalAmount.max.n / e.federal.basicPersonalAmount.max.d) + federalTuition,
-    ontarioClaim: Number(e.ontario.basicPersonalAmount.n / e.ontario.basicPersonalAmount.d),
+    federalClaim: wholeCents(e.federal.basicPersonalAmount.max) + federalTuition,
+    ontarioClaim: wholeCents(e.ontario.basicPersonalAmount),
     exempt: false,
   }
 }

@@ -1,13 +1,15 @@
 /**
  * Turn a work term (dates + pay) into a list of paycheques.
  *
- * Model (agreed for v1):
+ * Model:
  *  - Term gross = weekly pay x (weekdays in the term / 5), plus vacation pay.
+ *  - A regular cheque is a full pay period: weekly pay x 52 / P (so $20/hr x
+ *    40 h paid biweekly is $1,600, the number on a real stub). Full cheques are
+ *    paid until the term gross runs out; a final, smaller cheque pays the rest.
  *  - The first pay date is one pay period after the start date; later pay
  *    dates follow the frequency's cadence.
- *  - The number of paycheques is the term length in pay periods, rounded.
- *  - Every paycheque is equal; the last one absorbs any leftover cent.
- *  - The student can override the first pay date and the number of cheques.
+ *  - The student can override the first pay date and the number of cheques;
+ *    with a cheque count given, the term gross is split evenly instead.
  */
 import { add, div, mul, parseDecimal, q, toCents, type Cents, type Q } from '../money.ts'
 import type { IsoDate } from '../params/select.ts'
@@ -106,13 +108,23 @@ export function payDates(input: Pick<TermScheduleInput, 'start' | 'end' | 'frequ
 }
 
 export function buildTermSchedule(input: TermScheduleInput): TermSchedule {
-  const dates = payDates(input)
   const weekdays = weekdaysInclusive(input.start, input.end)
-  const vac = dec(input.vacationPayPercent ?? 0)
-  const gross = mul(weeklyPay(input.pay), q(weekdays, 5), add(q(1), div(vac, q(100))))
-  const termGross = toCents(gross)
-  const n = dates.length
-  const each = toCents(div(q(termGross), q(n)))
-  const cheques = dates.map((_, i) => (i < n - 1 ? each : termGross - each * (n - 1)))
+  const vac = add(q(1), div(dec(input.vacationPayPercent ?? 0), q(100)))
+  const weekly = mul(weeklyPay(input.pay), vac)
+  const termGross = toCents(mul(weekly, q(weekdays, 5)))
+  if (termGross <= 0) throw new ScheduleError('The term has no working days.')
+
+  let cheques: Cents[]
+  if (input.numberOfPays !== undefined) {
+    const n = input.numberOfPays
+    const each = toCents(div(q(termGross), q(n)))
+    cheques = Array.from({ length: n }, (_, i) => (i < n - 1 ? each : termGross - each * (n - 1)))
+  } else {
+    const regular = toCents(mul(weekly, q(52, PERIODS_PER_YEAR[input.frequency])))
+    const full = Math.floor(termGross / regular)
+    const rest = termGross - full * regular
+    cheques = [...Array<Cents>(full).fill(regular), ...(rest > 0 ? [rest] : [])]
+  }
+  const dates = payDates({ ...input, numberOfPays: cheques.length })
   return { weekdays, termGross, payDates: dates, cheques }
 }

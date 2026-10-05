@@ -65,8 +65,8 @@ describe('term gross and cheques', () => {
     expect(s.cheques.reduce((a, b) => a + b, 0)).toBe(1706640)
     expect(s.cheques[0]).toBe(213330)
   })
-  it('monthly offer of $4,000 over a 16-week term', () => {
-    // 4000 x 12/52 = 923.0769.../wk x 16 = 14,769.23
+  it('monthly offer of $4,000 over a 16-week term: three full months and a partial', () => {
+    // 4000 x 12/52 = 923.0769.../wk x 16 = 14,769.23 = 3 x 4,000 + 2,769.23
     const s = buildTermSchedule({
       start: '2026-01-05',
       end: '2026-04-24',
@@ -74,7 +74,19 @@ describe('term gross and cheques', () => {
       pay: { kind: 'monthly', amount: 400000 },
     })
     expect(s.termGross).toBe(1476923)
-    expect(s.cheques).toEqual([369231, 369231, 369231, 369230])
+    expect(s.cheques).toEqual([400000, 400000, 400000, 276923])
+    expect(s.payDates).toEqual(['2026-01-31', '2026-02-28', '2026-03-31', '2026-04-30'])
+  })
+  it('a 14.8-week term at $30/hr biweekly: seven $2,400 cheques and a final $960', () => {
+    // Sep 8 - Dec 18: 74 weekdays = 14.8 weeks x $1,200 = $17,760 = 7 x 2,400 + 960
+    const s = buildTermSchedule({ start: '2026-09-08', end: '2026-12-18', frequency: 'biweekly', pay: { kind: 'hourly', rate: 3000, hoursPerWeek: 40 } })
+    expect(s.termGross).toBe(1776000)
+    expect(s.cheques).toEqual([...Array(7).fill(240000), 96000])
+    expect(s.payDates.at(-1)).toBe('2026-12-29')
+  })
+  it('an explicit cheque count splits the term evenly', () => {
+    const s = buildTermSchedule({ start: '2026-09-08', end: '2026-12-18', frequency: 'biweekly', pay: { kind: 'hourly', rate: 3000, hoursPerWeek: 40 }, numberOfPays: 7 })
+    expect(s.cheques).toEqual([...Array(6).fill(253714), 1776000 - 6 * 253714])
   })
   it('biweekly offer amount', () => {
     const s = buildTermSchedule({ start: '2026-05-04', end: '2026-08-21', frequency: 'biweekly', pay: { kind: 'biweekly', amount: 250000 } })
