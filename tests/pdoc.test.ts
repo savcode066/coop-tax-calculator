@@ -25,6 +25,8 @@ interface PdocFixture {
     ytd: { pensionable: string; cpp: string; cpp2: string; ei: string }
   }
   expected: Record<'cpp' | 'cpp2' | 'ei' | 'federalTax' | 'ontarioTax', string | null>
+  /** Optional: PDOC's "Net amount", checked when present. */
+  pdocNet?: string
 }
 
 const DIR = join(import.meta.dirname, 'fixtures', 'pdoc')
@@ -75,6 +77,7 @@ describe('PDOC fixtures (exact to the cent)', () => {
         federalTax: dollarsToCents(e.federalTax),
         ontarioTax: dollarsToCents(e.ontarioTax),
       })
+      if (fx.pdocNet) expect(r.net).toBe(dollarsToCents(fx.pdocNet))
     })
   }
 })

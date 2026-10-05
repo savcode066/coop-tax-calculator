@@ -16,7 +16,7 @@ It is a static site. All calculation happens in the browser. There is no backend
 ```sh
 npm install
 npm run dev        # local dev server
-npm test           # Vitest: engine, params, PDOC fixtures, URL state
+npm test           # Vitest: engine, params, PDOC fixtures, URL state (97 tests)
 npm run typecheck  # tsc -b (strict)
 npm run build      # production build in dist/
 ```
@@ -79,7 +79,7 @@ Rounding follows T4127 Chapter 1:
 - **Tax, CPP and EI:** round half up to the cent ("if the third digit is five or more, increase the second digit").
 - **CPP basic exemption per period (3,500 / P):** truncated, so 134.61 for biweekly.
 - **Rate ratios (0.0495/0.0595, 0.01/0.0595):** never rounded.
-- **Each named factor** (F5, A, K1, K2, K4, T3, K1P, K2P, T4, V1, V2, S): rounded to the cent as its parenthesis resolves. T4127 Appendix 1 says this for CPP2. I applied it to every factor, and the PDOC fixtures are what will confirm it.
+- **Each named factor** (F5, A, K1, K2, K4, T3, K1P, K2P, T4, V1, V2, S): rounded to the cent as its parenthesis resolves. T4127 Appendix 1 says this for CPP2. I applied it to every factor, and all six PDOC fixtures confirm it.
 - **Federal and Ontario tax per period:** rounded separately, the way PDOC reports them.
 
 ### Engine 1: per-paycheque withholding (T4127 Option 1, periodic pay)
@@ -169,7 +169,7 @@ The July 2026 edition changed only BC, Newfoundland and Labrador, and PEI, so fe
   - the LIFT maximum ($875) and income threshold ($32,500). These are not indexed and are assumed unchanged.
   - the Ontario tax-reduction basic amount ($300, taken from T4127's S2 factor)
 - **Federal Top-Up Tax Credit (Budget 2025, 2025–2030).** This keeps 15% on credit amounts above the first bracket threshold. It is not modelled. The app warns when total credit amounts exceed $58,523, which is rare for students.
-- **Intermediate rounding.** Each T4127 factor is rounded as described above. If a filled-in PDOC fixture disagrees by a cent, fix the formula. Do not widen the tolerance.
+- **Intermediate rounding.** Each T4127 factor is rounded as described above. All six PDOC fixtures agree to the cent with this policy, including PDOC's own intermediate "Deductions for CPP additional contribution" (F5). If a future fixture disagrees by a cent, fix the formula. Do not widen the tolerance.
 
 ## Adding next year's parameters
 
@@ -185,49 +185,55 @@ The July 2026 edition changed only BC, Newfoundland and Labrador, and PEI, so fe
 
 ## Adding a PDOC fixture
 
-Fixtures live in `tests/fixtures/pdoc/*.json`, one paycheque each. `tests/pdoc.test.ts` reports a fixture as **todo** while any `expected` value is `null`. Once every expected value is filled in, the engine must match it **exactly**, with no tolerance.
+Fixtures live in `tests/fixtures/pdoc/*.json`, one paycheque each. `tests/pdoc.test.ts` reports a fixture as **todo** while any `expected` value is `null`. Once every expected value is filled in, the engine must match it **exactly**, with no tolerance. If the fixture also has `pdocNet`, the net pay is checked too.
 
-Six seed fixtures are waiting to be filled: $20, $30 and $45/hr at 40 h/week, each paid biweekly and monthly, with pay date 2026-05-15.
+The six seed fixtures are filled in from PDOC version 2026-06-11 (retrieved 2026-10-05). They cover $20, $30 and $45/hr at 40 h/week, each paid biweekly and monthly, with pay date 2026-05-15. All six match to the cent.
 
-Each fixture lists, under `pdoc`, the exact PDOC entries in order. For the seeds:
+| Case | Gross | CPP | EI | Federal | Ontario | Net |
+|---|---:|---:|---:|---:|---:|---:|
+| $20/hr biweekly | 1,600.00 | 87.19 | 26.08 | 111.47 | 67.16 | 1,308.10 |
+| $20/hr monthly | 3,466.67 | 188.91 | 56.51 | 241.52 | 145.51 | 2,834.22 |
+| $30/hr biweekly | 2,400.00 | 134.79 | 39.12 | 223.20 | 122.74 | 1,880.15 |
+| $30/hr monthly | 5,200.00 | 292.05 | 84.76 | 483.61 | 265.93 | 4,073.65 |
+| $45/hr biweekly | 3,600.00 | 206.19 | 58.68 | 462.92 | 235.83 | 2,636.38 |
+| $45/hr monthly | 7,800.00 | 446.75 | 127.14 | 1,002.99 | 510.96 | 5,712.16 |
+
+CPP2 was $0.00 in every case.
+
+To add a case, copy a seed fixture. Give it a new `id`, update `input`, then fill in `expected` from PDOC as follows:
 
 1. Open PDOC at [canada.ca/pdoc](https://www.canada.ca/pdoc) and choose **Salary**.
 2. **Step 1:**
    - **Province or territory of employment:** Ontario
-   - **Pay period frequency:** `Biweekly (26 pay periods a year)` or `Monthly (12 pay periods a year)`, as in the fixture
-   - **Date the employee is paid:** `2026-05-15`
+   - **Pay period frequency:** for example `Biweekly (26 pay periods a year)` or `Monthly (12 pay periods a year)`
+   - **Date the employee is paid:** the fixture's `input.payDate`. Pay dates before July 1 use the January edition; July 1 or later uses the July edition.
 3. **Step 2:**
    - **Salary or wages income per pay period:** the fixture's `input.gross`
-     - $20/hr: `1600.00` biweekly, `3466.67` monthly
-     - $30/hr: `2400.00` biweekly, `5200.00` monthly
-     - $45/hr: `3600.00` biweekly, `7800.00` monthly
-   - **Vacation pay:** `0.00`
+   - **Vacation pay:** blank
    - **Salary type:** No bonus or retroactive payment
-   - Leave everything else blank.
+   - Leave every other box unticked.
 4. **Step 3:**
    - **Claim type:** TD1 form
-     - **Total claim amount from employee's federal Form TD1:** `16452.00`
-     - **Total claim amount from employee's provincial or territorial Form TD1:** `12989.00`
+     - **Total claim amount from employee's federal Form TD1:** prefilled as `16,452.00` (the 2026 basic personal amount)
+     - **Total claim amount from employee's provincial or territorial Form TD1:** prefilled as `12,989.00`
    - **CPP:** choose "Year-to-date amount (from your records)"
-     - **CPP contributions deducted year-to-date:** `0.00`
-     - **Second additional CPP contributions deducted year-to-date:** `0.00`
+     - **Number of pensionable months:** `12` (prefilled)
+     - **Pensionable earnings year-to-date**, **CPP contributions deducted year-to-date** and **Second additional CPP contributions deducted year-to-date:** leave blank for a first paycheque. PDOC rejects `0.00`; blank means nothing deducted yet. For a later paycheque, enter the fixture's `input.ytd` amounts.
    - **EI:** choose "Year-to-date amount (from your records)"
-     - **EI premiums deducted year-to-date:** `0.00`
-     - **Insurable earnings year-to-date:** `0.00`
-   - Leave RPP, RRSP, union dues, additional tax and the other fields blank.
-5. Click **Calculate**. Copy these lines from the results into the fixture's `expected` block, as dollar strings like `"87.19"`:
+     - **Insurable earnings year-to-date** and **EI premiums deducted year-to-date:** same rule as CPP.
+   - Leave **Requested additional tax deductions** blank and the employer EI rate at `1.4`.
+5. Click **Calculate**. Copy these lines from the results into the fixture as dollar strings like `"87.19"`:
 
    | Fixture field | PDOC result line |
    |---|---|
    | `cpp` | CPP deductions |
-   | `cpp2` | Second CPP (CPP2) deductions (use `"0.00"` if not shown) |
+   | `cpp2` | CPP2 deductions |
    | `ei` | EI deductions |
    | `federalTax` | Federal tax deduction |
    | `ontarioTax` | Provincial tax deduction |
+   | `pdocNet` (optional) | Net amount |
 
-6. Run `npm test`.
-
-To add a new case, copy a seed fixture. Give it a new `id` and update `input`, including any year-to-date amounts for a later paycheque, then update the `pdoc` list to match what you entered in PDOC.
+6. Update the fixture's `pdoc` list to match what you entered, and run `npm test`.
 
 ## License and disclaimer
 

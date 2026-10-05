@@ -54,28 +54,33 @@
     },
     {
       "step": "Step 3",
+      "field": "Number of pensionable months",
+      "value": "12 (prefilled)"
+    },
+    {
+      "step": "Step 3",
       "field": "CPP: Year-to-date amount (from your records) -> CPP contributions deducted year-to-date",
-      "value": "0.00"
+      "value": "leave blank (PDOC rejects 0.00; blank means nothing deducted yet)"
     },
     {
       "step": "Step 3",
       "field": "Second additional CPP contributions deducted year-to-date",
-      "value": "0.00"
+      "value": "leave blank (PDOC rejects 0.00; blank means nothing deducted yet)"
     },
     {
       "step": "Step 3",
       "field": "EI: Year-to-date amount (from your records) -> EI premiums deducted year-to-date",
-      "value": "0.00"
+      "value": "leave blank (PDOC rejects 0.00; blank means nothing deducted yet)"
     },
     {
       "step": "Step 3",
       "field": "Insurable earnings year-to-date",
-      "value": "0.00"
+      "value": "leave blank (PDOC rejects 0.00; blank means nothing deducted yet)"
     },
     {
       "step": "Step 3",
       "field": "Everything else (RPP, RRSP, union dues, additional tax, etc.)",
-      "value": "leave blank / 0"
+      "value": "leave blank"
     }
   ],
   "input": {
@@ -93,17 +98,22 @@
     }
   },
   "expected": {
-    "cpp": null,
-    "cpp2": null,
-    "ei": null,
-    "federalTax": null,
-    "ontarioTax": null
+    "cpp": "134.79",
+    "cpp2": "0.00",
+    "ei": "39.12",
+    "federalTax": "223.20",
+    "ontarioTax": "122.74"
   },
   "pdocResultLabels": {
     "cpp": "CPP deductions",
-    "cpp2": "Second Canada Pension Plan (CPP2) deductions",
+    "cpp2": "CPP2 deductions",
     "ei": "EI deductions",
     "federalTax": "Federal tax deduction",
     "ontarioTax": "Provincial tax deduction"
+  },
+  "pdocNet": "1880.15",
+  "pdocSource": {
+    "version": "PDOC 2026-06-11 (screen SA_R)",
+    "retrieved": "2026-10-05"
   }
 }
