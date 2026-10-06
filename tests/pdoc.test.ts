@@ -54,7 +54,8 @@ describe('PDOC fixtures (exact to the cent)', () => {
         td1: {
           federalClaim: dollarsToCents(i.federalClaim),
           ontarioClaim: dollarsToCents(i.ontarioClaim),
-          exempt: i.exempt,
+          federalExempt: i.exempt,
+          ontarioExempt: i.exempt,
         },
         ytd: {
           pensionable: dollarsToCents(i.ytd.pensionable),

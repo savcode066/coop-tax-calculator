@@ -95,7 +95,7 @@ For each paycheque, with the T4127 edition in force on its pay date:
   - K2 = 14% × annualized base CPP + 14% × annualized EI. Once a maximum is reached with an employer, the annual maximum is used, as T4127 recommends.
   - K4 = 14% × min(annual gross, Canada employment amount)
 - **Ontario:** `T4 = V×A − KP − K1P − K2P`, then surtax V1, Ontario Health Premium V2 and tax reduction S: `T2 = T4 + V1 + V2 − S`.
-- **TD1 "total income less than total claim amount" box (claim code E):** no income tax is withheld, except the Ontario Health Premium on annualized income over $20,000. CPP and EI still apply.
+- **TD1 "total income less than total claim amount" box (claim code E):** handled separately for each form. Ticked on the federal TD1, no federal tax is withheld. Ticked on TD1ON, no Ontario tax is withheld, except the Ontario Health Premium on annualized income over $20,000. CPP and EI still apply either way.
 - **Per-employer caps:** CPP, CPP2 and EI caps are tracked per employer. Terms with the same employer name share year-to-date amounts. A new employer starts from zero.
   - This is why co-op students over-contribute CPP: each employer applies only `N × 3,500/P` of the exemption.
 

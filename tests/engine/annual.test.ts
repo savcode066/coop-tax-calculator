@@ -225,7 +225,7 @@ describe('edge cases', () => {
 
 describe('integration: Engine 1 paycheques feed Engine 2', () => {
   it('reproduces the withheld amounts used in the hand-worked slips', () => {
-    const td1 = { federalClaim: 1645200, ontarioClaim: 1298900, exempt: false }
+    const td1 = { federalClaim: 1645200, ontarioClaim: 1298900, federalExempt: false, ontarioExempt: false }
     const run = (month: number, gross: number) =>
       runPayroll({
         schedule: Array.from({ length: 8 }, (_, i) => ({ payDate: new Date(Date.UTC(2026, month, 16 + 14 * i)).toISOString().slice(0, 10), gross })),

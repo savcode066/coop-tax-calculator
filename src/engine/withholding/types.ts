@@ -18,12 +18,17 @@ export interface Td1 {
   /** TD1ON total claim amount (factor TCP), in cents. */
   ontarioClaim: Cents
   /**
-   * The TD1 box "my total income from all sources will be less than or equal
-   * to my total claim amount" (claim code E). No income tax is withheld, except
-   * the Ontario Health Premium on annualized income over $20,000. CPP and EI
-   * still apply.
+   * The box on federal TD1: "my total income from all sources will be less
+   * than or equal to my total claim amount" (federal claim code E). No federal
+   * income tax is withheld. CPP and EI still apply.
    */
-  exempt: boolean
+  federalExempt: boolean
+  /**
+   * The same box on TD1ON (Ontario claim code E). No Ontario income tax is
+   * withheld, except the Ontario Health Premium on annualized income over
+   * $20,000.
+   */
+  ontarioExempt: boolean
 }
 
 /** Year-to-date amounts with ONE employer, before the current pay period. */

@@ -43,7 +43,10 @@ export interface TermForm {
   /** Override the TD1 claim amounts entirely (blank = default). */
   federalClaim: string
   ontarioClaim: string
-  exempt: boolean
+  /** The "income less than claim" box on the federal TD1. */
+  federalExempt: boolean
+  /** The same box on TD1ON. */
+  ontarioExempt: boolean
 }
 
 export interface AppState {
@@ -90,7 +93,8 @@ export const newTerm = (over: Partial<TermForm> = {}, year: number = DEFAULT_TAX
   td1Tuition: '',
   federalClaim: '',
   ontarioClaim: '',
-  exempt: false,
+  federalExempt: false,
+  ontarioExempt: false,
   ...over,
 })
 
@@ -176,7 +180,7 @@ export function toCalculatorInput(state: AppState): Converted {
       vacationPayPercent: vac ?? '0',
       firstPayDate: t.firstPayDate || undefined,
       numberOfPays,
-      td1: { federalClaim, ontarioClaim, exempt: t.exempt },
+      td1: { federalClaim, ontarioClaim, federalExempt: t.federalExempt, ontarioExempt: t.ontarioExempt },
       location: t.location,
       workType: t.workType,
     })

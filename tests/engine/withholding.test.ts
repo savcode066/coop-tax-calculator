@@ -5,7 +5,7 @@ import { computePeriod, runPayroll } from '../../src/engine/withholding/periodic
 import { ZERO_YTD, type Td1 } from '../../src/engine/withholding/types.ts'
 
 const JAN = editionForPayDate('2026-03-01')
-const BASIC_TD1: Td1 = { federalClaim: 1645200, ontarioClaim: 1298900, exempt: false }
+const BASIC_TD1: Td1 = { federalClaim: 1645200, ontarioClaim: 1298900, federalExempt: false, ontarioExempt: false }
 
 describe('CPP basic exemption per period (T4127 Table 6.1, truncated)', () => {
   it.each([
@@ -110,7 +110,7 @@ describe('hand-worked: $20/hr x 40 h, biweekly ($1,600), January edition, basic 
 
 describe('TD1 "total income less than total claim amount" box (claim code E)', () => {
   it('withholds no federal tax, but CPP, EI and the Ontario Health Premium still apply', () => {
-    const r = computePeriod(JAN, { gross: 160000, periodsPerYear: 26, td1: { ...BASIC_TD1, exempt: true }, ytd: ZERO_YTD })
+    const r = computePeriod(JAN, { gross: 160000, periodsPerYear: 26, td1: { ...BASIC_TD1, federalExempt: true, ontarioExempt: true }, ytd: ZERO_YTD })
     expect(r.cpp).toBe(8719)
     expect(r.ei).toBe(2608)
     expect(r.federalTax).toBe(0)
@@ -118,10 +118,24 @@ describe('TD1 "total income less than total claim amount" box (claim code E)', (
     expect(r.ontarioTax).toBe(1731)
   })
   it('withholds nothing at all when annualized income is $20,000 or less', () => {
-    const r = computePeriod(JAN, { gross: 70000, periodsPerYear: 26, td1: { ...BASIC_TD1, exempt: true }, ytd: ZERO_YTD })
+    const r = computePeriod(JAN, { gross: 70000, periodsPerYear: 26, td1: { ...BASIC_TD1, federalExempt: true, ontarioExempt: true }, ytd: ZERO_YTD })
     expect(r.federalTax).toBe(0)
     expect(r.ontarioTax).toBe(0)
     expect(r.cpp).toBeGreaterThan(0)
+  })
+})
+
+describe('the box can be ticked on one form only', () => {
+  // Same $1,600 biweekly cheque as the hand-worked case: federal 111.47, Ontario 67.16 (OHP alone 17.31).
+  it('federal TD1 only: no federal tax, Ontario withheld as normal', () => {
+    const r = computePeriod(JAN, { gross: 160000, periodsPerYear: 26, td1: { ...BASIC_TD1, federalExempt: true }, ytd: ZERO_YTD })
+    expect(r.federalTax).toBe(0)
+    expect(r.ontarioTax).toBe(6716)
+  })
+  it('TD1ON only: federal withheld as normal, Ontario only the health premium', () => {
+    const r = computePeriod(JAN, { gross: 160000, periodsPerYear: 26, td1: { ...BASIC_TD1, ontarioExempt: true }, ytd: ZERO_YTD })
+    expect(r.federalTax).toBe(11147)
+    expect(r.ontarioTax).toBe(1731)
   })
 })
 

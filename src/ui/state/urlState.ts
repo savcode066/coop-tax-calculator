@@ -25,7 +25,8 @@ const TERM_KEYS: (keyof TermForm)[] = [
   'td1Tuition',
   'federalClaim',
   'ontarioClaim',
-  'exempt',
+  'federalExempt',
+  'ontarioExempt',
 ]
 
 const ENUMS: Partial<Record<keyof TermForm, readonly string[]>> = {
@@ -90,11 +91,12 @@ export function decodeState(encoded: string): AppState | null {
       const t = newTerm({ id: newId() }, year)
       if (!rt || typeof rt !== 'object') return t
       const src = rt as Record<string, unknown>
+      if (typeof src.exempt === 'boolean') t.federalExempt = t.ontarioExempt = src.exempt // links made before the boxes were split
       for (const k of TERM_KEYS) {
         const v = src[k]
         if (v === undefined) continue
-        if (k === 'exempt') {
-          if (typeof v === 'boolean') t.exempt = v
+        if (k === 'federalExempt' || k === 'ontarioExempt') {
+          if (typeof v === 'boolean') t[k] = v
           continue
         }
         const s = str(v, k === 'employer' ? 80 : 40)

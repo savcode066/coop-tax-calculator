@@ -25,7 +25,7 @@ const base = (terms: WorkTermInput[], over: Partial<CalculatorInput> = {}): Calc
 
 describe('calculator', () => {
   it('default TD1 is the 2026 basic personal amounts', () => {
-    expect(td1).toEqual({ federalClaim: 1645200, ontarioClaim: 1298900, exempt: false })
+    expect(td1).toEqual({ federalClaim: 1645200, ontarioClaim: 1298900, federalExempt: false, ontarioExempt: false })
     expect(defaultTd1(2026, 700000).federalClaim).toBe(2345200)
   })
 
@@ -106,7 +106,7 @@ describe('calculator', () => {
   })
 
   it('ticking the box with a second term later in the year leads to a balance owing', () => {
-    const exempt = { ...td1, exempt: true }
+    const exempt = { ...td1, federalExempt: true, ontarioExempt: true }
     const r = calculate(
       base([
         term({ id: 'a', td1: exempt, pay: { kind: 'hourly', rate: 3000, hoursPerWeek: 40 } }),

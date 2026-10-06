@@ -121,6 +121,7 @@ export function Segmented<T extends string>(props: {
   value: T
   options: readonly { value: T; label: string }[]
   onChange: (v: T) => void
+  hint?: ReactNode
 }) {
   const name = useId()
   return (
@@ -139,6 +140,7 @@ export function Segmented<T extends string>(props: {
           </label>
         ))}
       </div>
+      {props.hint && <p className="text-xs leading-snug text-muted">{props.hint}</p>}
     </fieldset>
   )
 }

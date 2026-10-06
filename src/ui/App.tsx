@@ -42,14 +42,14 @@ export function App() {
   const input = useDeferredValue(converted.input)
   const result: CalculatorResult = useMemo(() => calculate(input), [input])
 
-  // TD1 helper: what April looks like with each term's box flipped.
+  // TD1 helper: what April looks like if each box on each term were flipped.
   const simulations = useMemo(() => {
     const out: Record<string, Td1Simulation> = {}
     if (!result.annual) return out
-    for (const t of input.terms) {
-      const flipped = calculate({ ...input, terms: input.terms.map((x) => (x.id === t.id ? { ...x, td1: { ...x.td1, exempt: !x.td1.exempt } } : x)) })
-      out[t.id] = { current: result.annual.refund, flipped: flipped.annual?.refund ?? null }
-    }
+    const flip = (id: string, key: 'federalExempt' | 'ontarioExempt') =>
+      calculate({ ...input, terms: input.terms.map((x) => (x.id === id ? { ...x, td1: { ...x.td1, [key]: !x.td1[key] } } : x)) }).annual?.refund ?? null
+    for (const t of input.terms)
+      out[t.id] = { current: result.annual.refund, flipFederal: flip(t.id, 'federalExempt'), flipOntario: flip(t.id, 'ontarioExempt') }
     return out
   }, [input, result])
 

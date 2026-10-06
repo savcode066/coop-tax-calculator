@@ -57,9 +57,9 @@ export function computePeriod(params: WithholdingParams, input: PeriodInput): Pe
   })
   const on = ontarioAnnualTax(params.ontario, { A, TCP: fromCents(input.td1.ontarioClaim), credit })
 
-  // Claim code E: T = 0, except Ontario still withholds the Health Premium.
-  const T1 = input.td1.exempt ? q(0) : fed.T1
-  const T2 = input.td1.exempt ? on.V2 : on.T2
+  // Claim code E (per form): no tax, except Ontario still withholds the Health Premium.
+  const T1 = input.td1.federalExempt ? q(0) : fed.T1
+  const T2 = input.td1.ontarioExempt ? on.V2 : on.T2
 
   // --- Step 6: per-period deductions ---------------------------------------
   // Federal and Ontario are rounded separately, as PDOC reports them.

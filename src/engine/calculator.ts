@@ -187,6 +187,7 @@ export function defaultTd1(taxYear: number, federalTuition: Cents = 0, registry:
   return {
     federalClaim: wholeCents(e.federal.basicPersonalAmount.max) + federalTuition,
     ontarioClaim: wholeCents(e.ontario.basicPersonalAmount),
-    exempt: false,
+    federalExempt: false,
+    ontarioExempt: false,
   }
 }

@@ -8,7 +8,7 @@ const strip = (s: ReturnType<typeof defaultState>) => ({ ...s, terms: s.terms.ma
 describe('URL state', () => {
   it('round-trips through the fragment, including unicode employer names', () => {
     const s = defaultState()
-    s.terms = [newTerm({ employer: 'Québec Ünïcode Co ✓', amount: '31.25', frequency: 'monthly', exempt: true }), newTerm({ start: '2026-01-05', end: '2026-04-24' })]
+    s.terms = [newTerm({ employer: 'Québec Ünïcode Co ✓', amount: '31.25', frequency: 'monthly', federalExempt: true }), newTerm({ start: '2026-01-05', end: '2026-04-24' })]
     s.tuitionCurrent = '7400'
     s.age18to69 = false
     const back = readStateFromLocation(hashFor(s))
@@ -22,9 +22,11 @@ describe('URL state', () => {
   it('rejects garbage and unknown versions, and ignores bad field values', () => {
     expect(decodeState('not-base64!')).toBeNull()
     expect(decodeState(Buffer.from('{"v":99}').toString('base64url'))).toBeNull()
-    const bad = Buffer.from(JSON.stringify({ v: 1, terms: [{ frequency: 'hourly??', amount: 42, exempt: 'yes', location: 'mars' }] })).toString('base64url')
+    const bad = Buffer.from(JSON.stringify({ v: 1, terms: [{ frequency: 'hourly??', amount: 42, federalExempt: 'yes', location: 'mars' }] })).toString('base64url')
     const s = decodeState(bad)!
-    expect(s.terms[0]).toMatchObject({ frequency: 'biweekly', amount: '', exempt: false, location: 'ontario' })
+    expect(s.terms[0]).toMatchObject({ frequency: 'biweekly', amount: '', federalExempt: false, location: 'ontario' })
+    const legacy = Buffer.from(JSON.stringify({ v: 1, terms: [{ exempt: true }] })).toString('base64url')
+    expect(decodeState(legacy)!.terms[0]).toMatchObject({ federalExempt: true, ontarioExempt: true })
     expect(readStateFromLocation('#other')).toBeNull()
   })
 })
@@ -59,7 +61,7 @@ describe('form conversion', () => {
     const { input, errors } = toCalculatorInput(s)
     expect(errors).toEqual({})
     expect(input.terms[0]!.pay).toEqual({ kind: 'hourly', rate: 2550, hoursPerWeek: '37.5' })
-    expect(input.terms[0]!.td1).toEqual({ federalClaim: 1645200 + 700000, ontarioClaim: 1298900, exempt: false })
+    expect(input.terms[0]!.td1).toEqual({ federalClaim: 1645200 + 700000, ontarioClaim: 1298900, federalExempt: false, ontarioExempt: false })
   })
 
   it('reports invalid fields', () => {
